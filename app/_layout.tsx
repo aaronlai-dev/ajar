@@ -1,39 +1,39 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
-
-import { useColorScheme } from '@/hooks/useColorScheme';
-
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
+import { ThemeProvider as NavThemeProvider } from '@react-navigation/native';
+import { Stack } from "expo-router";
+import { NAV_THEME } from '../theme';
+import './global.css';
+import { useColorScheme } from '../lib/useColorScheme';
+import { useState } from 'react';
+import { AuthProvider } from './contexts/auth';
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
-
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
-
-  if (!loaded) {
-    return null;
-  }
+  const { colorScheme, isDarkColorScheme } = useColorScheme();
+  const [user, setUser] = useState(null);
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
-  );
+    <AuthProvider>
+      <NavThemeProvider value={NAV_THEME[colorScheme]}>
+        <Stack>
+          {/* Main App Screens */}
+          <Stack.Screen 
+            name="index" 
+            options={{ headerShown: false }} 
+          />
+          <Stack.Screen 
+            name="(tabs)" 
+            options={{ headerShown: false }} 
+          />
+
+          {/* Full-Screen Pending Requests Screen (No Nav Bar) */}
+          <Stack.Screen 
+            name="pendingRequestsModal" 
+            options={{ 
+              headerShown: false, 
+              presentation: 'modal' // Makes it full-screen 
+            }} 
+          />
+        </Stack>
+      </NavThemeProvider>
+    </AuthProvider>
+  )
 }

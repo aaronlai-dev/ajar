@@ -1,74 +1,102 @@
-import { Image, StyleSheet, Platform } from 'react-native';
+import { auth } from "@/FirebaseConfig";
+import { router } from "expo-router";
+import { SafeAreaView, Text, TouchableOpacity, View, Dimensions } from "react-native";
+import { useAuth } from '../contexts/auth';
+import React, { useEffect } from 'react';
+import Animated, { 
+  useSharedValue, 
+  useAnimatedStyle, 
+  withTiming, 
+  withDelay,
+  Easing,
+  interpolate,
+} from 'react-native-reanimated';
+import Door from "@/components/door";
+import PersonalDoor from "@/components/personalDoor";
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+export default function Index() {
+  const { user } = useAuth();
+  
+  // Animation values
+  const doorProgress = useSharedValue(0);
+  const contentOpacity = useSharedValue(1);
+  const doorInsideOpacity = useSharedValue(0);
 
-export default function HomeScreen() {
+  // Door frame container
+  const doorContainerStyle = useAnimatedStyle(() => {
+    return {
+      opacity: contentOpacity.value,
+      transform: [
+        { scale: interpolate(doorProgress.value, [0, 0.5, 1], [1, 1.2, 1.5]) }
+      ]
+    };
+  });
+
+  const handleSignOut = async () => {
+    try {
+      await auth.signOut();
+      router.replace('/');
+    } catch (error) {
+      console.error('Sign out error:', error);
+    }
+  };
+
+  const openDoor = () => {
+    // Open the doors
+    doorProgress.value = withTiming(1, {
+      duration: 800,
+      easing: Easing.inOut(Easing.ease),
+    });
+
+    // Fade out main content
+    contentOpacity.value = withDelay(500, withTiming(0, {
+      duration: 400,
+      easing: Easing.inOut(Easing.ease),
+    }));
+
+    doorInsideOpacity.value = withDelay(200, withTiming(1, {
+      duration: 600,
+      easing: Easing.inOut(Easing.ease),
+    }));
+  };
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12'
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+    <SafeAreaView className="flex-1">
+      {/* Main content */}
+      <View className="flex-1">
+        {/* Header with greeting and sign out */}
+        <View className="flex-row justify-between items-center px-4 pt-2">
+          <Text className="text-3xl font-bold ">{`Hello, ${user?.name || 'User'}`}</Text>
+          <TouchableOpacity 
+            onPress={handleSignOut}
+            className="bg-gray-700 px-4 py-2 rounded-full"
+          >
+            <Text className="font-semibold text-gray-200">Sign Out</Text>
+          </TouchableOpacity>
+        </View>
+        
+        {/* Door container */}
+        <View className="flex-1 justify-center items-center">
+          <Animated.View style={doorContainerStyle}>
+            <Door 
+              doorProgress={doorProgress} 
+            />
+          </Animated.View>
+          {/* Text below door */}
+          <Animated.Text 
+              onPress={openDoor}
+              className="mt-5 text-lg font-medium bg-gray-600 text-gray-300 rounded-lg text-center"
+            >
+              Open  Door
+          </Animated.Text>
+        </View>
+      </View>
+
+      <PersonalDoor 
+        doorProgress={doorProgress} 
+        doorInsideOpacity={doorInsideOpacity}
+        contentOpacity={contentOpacity}
+      />
+    </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-});

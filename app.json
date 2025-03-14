@@ -5,7 +5,7 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
+    "scheme": "ajar",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
@@ -36,6 +36,15 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "1343e9f5-5458-4d31-bd89-03a251d61efa"
+      }
+    },
+    "owner": "aaronlai-dev"
   }
 }
