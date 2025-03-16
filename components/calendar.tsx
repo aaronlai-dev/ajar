@@ -42,7 +42,7 @@ function Calendar({
     <DateTimePicker
       minDate={today}
       showOutsideDays={showOutsideDays}
-      className={`border-muted bg-card shadow-muted w-[310] rounded-xl border p-3 shadow-lg dark:shadow-none ${className || ''}`}
+      className={`border-muted bg-card shadow-muted w-[310] rounded-xl border p-2 shadow-lg dark:shadow-none ${className || ''}`}
       containerHeight={containerHeight}
       disableYearPicker={true}
       classNames={{

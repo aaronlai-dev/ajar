@@ -28,7 +28,7 @@ export default function DatePicker({ showCalendar, setShowCalendar }: DatePicker
 
       {/* Calendar Modal */}
       <Modal isOpen={showCalendar}>
-        <View className="bg-white rounded-xl">
+        <View className="bg-white rounded-xl z-10">
           <Calendar
             mode="single"
             date={date}

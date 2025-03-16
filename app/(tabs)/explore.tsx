@@ -13,9 +13,8 @@ export default function Explore() {
 
     >
       <View className="mb-20">
-
+        <Text>Explore</Text>
       </View>
-      <SingleDatePicker />
     </View>
   );
 }
