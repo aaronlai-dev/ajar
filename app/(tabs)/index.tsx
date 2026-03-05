@@ -1,5 +1,6 @@
 import { Image } from "expo-image";
-import { Platform, StyleSheet } from "react-native";
+import { Text, Pressable, Platform, StyleSheet } from "react-native";
+import { supabase } from "@/src/lib/supabase";
 
 import { HelloWave } from "@/src/components/hello-wave";
 import ParallaxScrollView from "@/src/components/parallax-scroll-view";
@@ -22,6 +23,9 @@ export default function HomeScreen() {
         <ThemedText type="title">Welcome!</ThemedText>
         <HelloWave />
       </ThemedView>
+      <Pressable onPress={async () => await supabase.auth.signOut()}>
+        <Text>Sign Out</Text>
+      </Pressable>
       <ThemedView style={styles.stepContainer}>
         <ThemedText type="subtitle">Step 1: Try it</ThemedText>
         <ThemedText>
