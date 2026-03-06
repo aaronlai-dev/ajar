@@ -9,59 +9,63 @@ import {
   Platform,
 } from "react-native";
 import { useRouter } from "expo-router";
+import { Controller, useForm } from "react-hook-form";
 import { supabase } from "@/src/lib/supabase";
 
-export default function LoginScreen() {
+type FormValues = {
+  email: string;
+  password: string;
+};
+
+export default function LoginScreen(): JSX.Element {
   const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
   const [mode, setMode] = useState<"signin" | "signup">("signin");
+  const [message, setMessage] = useState<string | null>(null);
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<FormValues>({
+    defaultValues: { email: "", password: "" },
+    mode: "onSubmit",
+  });
 
   const resetMessage = () => setMessage(null);
 
-  const handleSignUp = async () => {
+  const onSignIn = async (values: FormValues) => {
     resetMessage();
-    if (!email || !password) {
-      setMessage("Please provide email and password.");
-      return;
-    }
-
-    setLoading(true);
-    const { error } = await supabase.auth.signUp({ email, password });
-    setLoading(false);
-
-    if (error) {
-      setMessage(error.message);
-    } else {
-      setMessage(
-        "Signed up — check your email for a confirmation link if your project requires it.",
-      );
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword(values);
+      if (error) {
+        setMessage(error.message);
+        return;
+      }
+      if (data?.session) {
+        router.replace("/(tabs)");
+      } else {
+        setMessage("Signed in, but no session returned.");
+      }
+    } catch (err: any) {
+      setMessage(err?.message ?? "An unexpected error occurred.");
     }
   };
 
-  const handleSignIn = async () => {
+  const onSignUp = async (values: FormValues) => {
     resetMessage();
-    if (!email || !password) {
-      setMessage("Please provide email and password.");
-      return;
-    }
-
-    setLoading(true);
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    setLoading(false);
-
-    if (error) {
-      setMessage(error.message);
-    } else if (data?.session) {
-      // Navigate to authenticated area
-      router.replace("/(tabs)");
-    } else {
-      setMessage("Unexpected response from auth provider.");
+    try {
+      const { error } = await supabase.auth.signUp(values);
+      if (error) {
+        setMessage(error.message);
+        return;
+      }
+      setMessage(
+        "Signed up — check your email for a confirmation link if your project requires it.",
+      );
+      // Optionally switch to sign-in mode after signup
+      setMode("signin");
+    } catch (err: any) {
+      setMessage(err?.message ?? "An unexpected error occurred.");
     }
   };
 
@@ -75,24 +79,62 @@ export default function LoginScreen() {
           {mode === "signin" ? "Sign in" : "Create account"}
         </Text>
 
-        <TextInput
-          placeholder="Email"
-          value={email}
-          onChangeText={setEmail}
-          keyboardType="email-address"
-          autoCapitalize="none"
-          className="border border-gray-300 dark:border-gray-700 rounded p-3 mb-3 text-black dark:text-white bg-transparent"
-          placeholderTextColor="#9CA3AF"
+        <Controller
+          control={control}
+          name="email"
+          rules={{
+            required: "Email is required",
+            pattern: {
+              value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+              message: "Invalid email address",
+            },
+          }}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextInput
+              placeholder="Email"
+              value={value}
+              onChangeText={onChange}
+              onBlur={onBlur}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              placeholderTextColor="#9CA3AF"
+              className="border border-gray-300 dark:border-gray-700 rounded p-3 mb-1 text-black dark:text-white bg-transparent"
+            />
+          )}
         />
+        {errors.email ? (
+          <Text className="text-sm text-red-600 mb-2">
+            {errors.email.message}
+          </Text>
+        ) : null}
 
-        <TextInput
-          placeholder="Password"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-          className="border border-gray-300 dark:border-gray-700 rounded p-3 mb-3 text-black dark:text-white bg-transparent"
-          placeholderTextColor="#9CA3AF"
+        <Controller
+          control={control}
+          name="password"
+          rules={{
+            required: "Password is required",
+            minLength: {
+              value: 6,
+              message: "Password must be at least 6 characters",
+            },
+          }}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextInput
+              placeholder="Password"
+              value={value}
+              onChangeText={onChange}
+              onBlur={onBlur}
+              secureTextEntry
+              placeholderTextColor="#9CA3AF"
+              className="border border-gray-300 dark:border-gray-700 rounded p-3 mb-1 text-black dark:text-white bg-transparent"
+            />
+          )}
         />
+        {errors.password ? (
+          <Text className="text-sm text-red-600 mb-2">
+            {errors.password.message}
+          </Text>
+        ) : null}
 
         {message ? (
           <Text
@@ -106,11 +148,11 @@ export default function LoginScreen() {
         ) : null}
 
         <Pressable
-          onPress={mode === "signin" ? handleSignIn : handleSignUp}
+          onPress={handleSubmit(mode === "signin" ? onSignIn : onSignUp)}
           className="bg-blue-600 rounded p-3 mb-2 items-center"
-          disabled={loading}
+          disabled={isSubmitting}
         >
-          {loading ? (
+          {isSubmitting ? (
             <ActivityIndicator color="#fff" />
           ) : (
             <Text className="text-white">
@@ -120,7 +162,10 @@ export default function LoginScreen() {
         </Pressable>
 
         <Pressable
-          onPress={() => setMode(mode === "signin" ? "signup" : "signin")}
+          onPress={() => {
+            setMode((m) => (m === "signin" ? "signup" : "signin"));
+            resetMessage();
+          }}
           className="items-center p-3"
         >
           <Text className="text-sm text-blue-600">
