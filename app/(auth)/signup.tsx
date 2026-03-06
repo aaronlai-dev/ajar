@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
 	ActivityIndicator,
@@ -14,14 +14,17 @@ import {
 import { z } from "zod";
 import { supabase } from "@/lib/supabase";
 
-const loginSchema = z.object({
+const signUpSchema = z.object({
+	username: z.string().min(3),
+	firstName: z.string().min(3),
+	lastName: z.string().min(3),
 	email: z.email(),
 	password: z.string().min(6),
 });
 
-type FormValues = z.infer<typeof loginSchema>;
+type FormValues = z.infer<typeof signUpSchema>;
 
-const LoginScreen = () => {
+const SignupScreen = () => {
 	const router = useRouter();
 	const [message, setMessage] = useState<string | null>(null);
 
@@ -30,26 +33,34 @@ const LoginScreen = () => {
 		handleSubmit,
 		formState: { errors, isSubmitting },
 	} = useForm<FormValues>({
-		defaultValues: { email: "", password: "" },
 		mode: "onSubmit",
-		resolver: zodResolver(loginSchema),
+		resolver: zodResolver(signUpSchema),
 	});
 
 	const resetMessage = () => setMessage(null);
 
-	const onSignIn = async (values: FormValues) => {
+	const onSignUp = async (values: FormValues) => {
+		console.log(values);
 		resetMessage();
 		try {
-			const { data, error } = await supabase.auth.signInWithPassword(values);
+			const { error } = await supabase.auth.signUp({
+				email: values.email,
+				password: values.password,
+				options: {
+					data: {
+						username: values.username,
+						first_name: values.firstName,
+						last_name: values.lastName,
+					},
+				},
+			});
 			if (error) {
 				setMessage(error.message);
 				return;
 			}
-			if (data?.session) {
-				router.replace("/(tabs)");
-			} else {
-				setMessage("Signed in, but no session returned.");
-			}
+			setMessage(
+				"Signed up — check your email for a confirmation link if your project requires it.",
+			);
 		} catch (err: any) {
 			setMessage(err?.message ?? "An unexpected error occurred.");
 		}
@@ -62,8 +73,53 @@ const LoginScreen = () => {
 		>
 			<View className="w-full max-w-md">
 				<Text className="text-2xl font-bold text-center mb-4 text-black dark:text-white">
-					Sign in
+					Sign Up
 				</Text>
+
+				<Controller
+					control={control}
+					name="firstName"
+					render={({ field: { onChange, onBlur, value } }) => (
+						<TextInput
+							placeholder="First Name"
+							value={value}
+							onChangeText={onChange}
+							onBlur={onBlur}
+							placeholderTextColor="#9CA3AF"
+							className="border border-gray-300 dark:border-gray-700 rounded p-3 mb-1 text-black dark:text-white bg-transparent"
+						/>
+					)}
+				/>
+
+				<Controller
+					control={control}
+					name="lastName"
+					render={({ field: { onChange, onBlur, value } }) => (
+						<TextInput
+							placeholder="Last Name"
+							value={value}
+							onChangeText={onChange}
+							onBlur={onBlur}
+							placeholderTextColor="#9CA3AF"
+							className="border border-gray-300 dark:border-gray-700 rounded p-3 mb-1 text-black dark:text-white bg-transparent"
+						/>
+					)}
+				/>
+
+				<Controller
+					control={control}
+					name="username"
+					render={({ field: { onChange, onBlur, value } }) => (
+						<TextInput
+							placeholder="Username"
+							value={value}
+							onChangeText={onChange}
+							onBlur={onBlur}
+							placeholderTextColor="#9CA3AF"
+							className="border border-gray-300 dark:border-gray-700 rounded p-3 mb-1 text-black dark:text-white bg-transparent"
+						/>
+					)}
+				/>
 
 				<Controller
 					control={control}
@@ -120,25 +176,25 @@ const LoginScreen = () => {
 				) : null}
 
 				<Pressable
-					onPress={handleSubmit(onSignIn)}
+					onPress={handleSubmit(onSignUp)}
 					className="bg-blue-600 rounded p-3 mb-2 items-center"
 					disabled={isSubmitting}
 				>
 					{isSubmitting ? (
 						<ActivityIndicator color="#fff" />
 					) : (
-						<Text className="text-white">Sign in</Text>
+						<Text className="text-white">Create account</Text>
 					)}
 				</Pressable>
 
 				<Pressable
 					onPress={() => {
-						router.replace("/signup");
+						router.replace("/login");
 					}}
 					className="items-center p-3"
 				>
 					<Text className="text-sm text-blue-600">
-						Dont have an account? Create one
+						Already have an account?
 					</Text>
 				</Pressable>
 			</View>
@@ -146,4 +202,4 @@ const LoginScreen = () => {
 	);
 };
 
-export default LoginScreen;
+export default SignupScreen;
