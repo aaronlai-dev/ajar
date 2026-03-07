@@ -7,6 +7,8 @@ export async function getFollowers(userId: string) {
       follower:profiles!relationships_follower_id_fkey (
         id,
         username,
+        first_name,
+        last_name,
         avatar_url
       )
     `)

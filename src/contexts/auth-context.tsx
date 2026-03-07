@@ -2,15 +2,27 @@ import type { Session, User } from "@supabase/supabase-js";
 import { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 
-type AuthContextType = {
-	user: User | null;
-	session: Session | null;
-	userId: string | null;
+type AuthenticatedState = {
+	isAuthenticated: true;
+	user: User;
+	session: Session;
+	userId: string;
 	isLoading: boolean;
 	signOut: () => Promise<void>;
 };
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+type UnauthenticatedState = {
+	isAuthenticated: false;
+	user: null;
+	session: null;
+	userId: null;
+	isLoading: boolean;
+	signOut: () => Promise<void>;
+};
+
+type AuthState = AuthenticatedState | UnauthenticatedState;
+
+const AuthContext = createContext<AuthState | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
 	const [user, setUser] = useState<User | null>(null);
@@ -18,14 +30,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 	const [isLoading, setIsLoading] = useState(true);
 
 	useEffect(() => {
-		// Get initial session
 		supabase.auth.getSession().then(({ data: { session } }) => {
 			setSession(session);
 			setUser(session?.user ?? null);
 			setIsLoading(false);
 		});
 
-		// Listen for auth changes
 		const {
 			data: { subscription },
 		} = supabase.auth.onAuthStateChange((_event, session) => {
@@ -41,19 +51,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 		await supabase.auth.signOut();
 	};
 
-	return (
-		<AuthContext.Provider
-			value={{
-				user,
-				session,
-				userId: user?.id ?? null,
-				isLoading,
-				signOut,
-			}}
-		>
-			{children}
-		</AuthContext.Provider>
-	);
+	const value: AuthState =
+		session && user
+			? {
+					isAuthenticated: true as const,
+					user,
+					session,
+					userId: user.id,
+					isLoading,
+					signOut,
+				}
+			: {
+					isAuthenticated: false as const,
+					user: null,
+					session: null,
+					userId: null,
+					isLoading,
+					signOut,
+				};
+
+	return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export const useAuth = () => {
@@ -62,4 +79,10 @@ export const useAuth = () => {
 		throw new Error("useAuth must be used within an AuthProvider");
 	}
 	return context;
+};
+
+export const useAuthenticatedUser = (): AuthenticatedState => {
+	const context = useAuth();
+
+	return context as AuthenticatedState;
 };

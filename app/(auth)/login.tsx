@@ -4,14 +4,13 @@ import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
 	ActivityIndicator,
-	KeyboardAvoidingView,
-	Platform,
 	Pressable,
 	Text,
 	TextInput,
 	View,
 } from "react-native";
 import { z } from "zod";
+import { ContentSafeArea } from "@/components/layout/content-safe-area";
 import { supabase } from "@/lib/supabase";
 
 const loginSchema = z.object({
@@ -52,11 +51,8 @@ const LoginScreen = () => {
 	};
 
 	return (
-		<KeyboardAvoidingView
-			behavior={Platform.select({ ios: "padding", android: undefined })}
-			className="flex-1 bg-white dark:bg-black items-center justify-center p-6"
-		>
-			<View className="w-full max-w-md">
+		<ContentSafeArea>
+			<View className="w-full">
 				<Text className="text-2xl font-bold text-center mb-4 text-black dark:text-white">
 					Sign in
 				</Text>
@@ -138,7 +134,7 @@ const LoginScreen = () => {
 					</Text>
 				</Pressable>
 			</View>
-		</KeyboardAvoidingView>
+		</ContentSafeArea>
 	);
 };
 

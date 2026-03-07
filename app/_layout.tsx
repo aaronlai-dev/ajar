@@ -1,11 +1,14 @@
 import "../global.css";
 
-import { Stack } from "expo-router";
+import { Stack, useRouter, useSegments } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import "react-native-reanimated";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { useFonts } from "expo-font";
+import { useEffect } from "react";
 import { ActivityIndicator, View } from "react-native";
-import { AuthProvider } from "@/contexts/auth-context";
+import { AuthProvider, useAuth } from "@/contexts/auth-context";
+import { queryClient } from "@/lib/query-client";
 
 function RootLayoutNav() {
 	const [fontsLoaded] = useFonts({
@@ -15,8 +18,27 @@ function RootLayoutNav() {
 		"Manrope-Bold": require("@/assets/fonts/Manrope-Bold.ttf"),
 	});
 
-	// While fonts are loading, render a simple loading indicator
-	if (!fontsLoaded) {
+	const { isAuthenticated, isLoading } = useAuth();
+	const segments = useSegments();
+	const router = useRouter();
+
+	useEffect(() => {
+		if (isLoading || !fontsLoaded) return;
+
+		const inAuthGroup = segments[0] === "(auth)";
+		const inTabsGroup = segments[0] === "(tabs)";
+
+		if (!isAuthenticated && inTabsGroup) {
+			// Redirect to signin if not authenticated and trying to access protected routes
+			router.replace("/(auth)/login");
+		} else if (isAuthenticated && inAuthGroup) {
+			// Redirect to tabs if authenticated and on auth screens
+			router.replace("/(tabs)");
+		}
+	}, [isAuthenticated, segments, isLoading, fontsLoaded, router]);
+
+	// Show loading while fonts or auth is loading
+	if (!fontsLoaded || isLoading) {
 		return (
 			<View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
 				<ActivityIndicator />
@@ -27,13 +49,9 @@ function RootLayoutNav() {
 	return (
 		<>
 			<Stack>
+				<Stack.Screen name="(auth)/login" options={{ headerShown: false }} />
+				<Stack.Screen name="(auth)/signup" options={{ headerShown: false }} />
 				<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-				<Stack.Screen name="login" options={{ headerShown: false }} />
-				<Stack.Screen name="signup" options={{ headerShown: false }} />
-				<Stack.Screen
-					name="modal"
-					options={{ presentation: "modal", title: "Modal" }}
-				/>
 			</Stack>
 			<StatusBar style="auto" />
 		</>
@@ -42,8 +60,10 @@ function RootLayoutNav() {
 
 export default function RootLayout() {
 	return (
-		<AuthProvider>
-			<RootLayoutNav />
-		</AuthProvider>
+		<QueryClientProvider client={queryClient}>
+			<AuthProvider>
+				<RootLayoutNav />
+			</AuthProvider>
+		</QueryClientProvider>
 	);
 }
