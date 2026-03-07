@@ -1,5 +1,5 @@
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ThemedText } from "@/components/ui/themedText";
+import { ThemedText } from "@/components/ui/themed-text";
 
 export default function TabTwoScreen() {
 	return (
