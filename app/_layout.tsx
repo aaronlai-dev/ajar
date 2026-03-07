@@ -4,7 +4,8 @@ import { Stack, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect } from "react";
 import "react-native-reanimated";
-
+import { useFonts } from "expo-font";
+import { ActivityIndicator, View } from "react-native";
 import { supabase } from "@/lib/supabase";
 
 export const unstable_settings = {
@@ -13,6 +14,13 @@ export const unstable_settings = {
 
 export default function RootLayout() {
 	const router = useRouter();
+
+	const [fontsLoaded] = useFonts({
+		"Manrope-Regular": require("@/assets/fonts/Manrope-Regular.ttf"),
+		"Manrope-Medium": require("@/assets/fonts/Manrope-Medium.ttf"),
+		"Manrope-SemiBold": require("@/assets/fonts/Manrope-SemiBold.ttf"),
+		"Manrope-Bold": require("@/assets/fonts/Manrope-Bold.ttf"),
+	});
 
 	useEffect(() => {
 		let mounted = true;
@@ -43,6 +51,15 @@ export default function RootLayout() {
 			(authListener as any)?.subscription?.unsubscribe?.();
 		};
 	}, [router]);
+
+	// While fonts are loading, render a simple loading indicator so text components use the loaded fonts when mounted.
+	if (!fontsLoaded) {
+		return (
+			<View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+				<ActivityIndicator />
+			</View>
+		);
+	}
 
 	return (
 		<>

@@ -8,7 +8,7 @@ const FriendsScreen = () => {
 
 	return (
 		<SafeAreaView>
-			<ThemedText variant="h1">Friends page</ThemedText>
+			<ThemedText variant="h1">Friends</ThemedText>
 			<TextInput
 				placeholder="Search"
 				value={searchFriend}

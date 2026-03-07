@@ -1,5 +1,3 @@
-// src/components/ui/Text.tsx
-
 import { Text as RNText, type TextProps } from "react-native";
 
 interface CustomTextProps extends TextProps {
