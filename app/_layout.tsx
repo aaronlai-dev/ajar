@@ -2,7 +2,7 @@ import "../global.css";
 
 import { Stack, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import "react-native-reanimated";
 import { useFonts } from "expo-font";
 import { ActivityIndicator, View } from "react-native";

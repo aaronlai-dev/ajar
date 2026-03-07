@@ -1,10 +1,10 @@
-import { SafeAreaView } from "react-native-safe-area-context";
+import { ContentSafeArea } from "@/components/layout/content-safe-area";
 import { ThemedText } from "@/components/ui/themed-text";
 
 export default function TabTwoScreen() {
 	return (
-		<SafeAreaView>
+		<ContentSafeArea>
 			<ThemedText variant="h1">Doors</ThemedText>
-		</SafeAreaView>
+		</ContentSafeArea>
 	);
 }
