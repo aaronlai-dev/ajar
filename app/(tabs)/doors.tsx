@@ -1,5 +1,5 @@
-import { Text } from "react-native";
+import { ThemedText } from "@/components/ui/themedText";
 
 export default function TabTwoScreen() {
-	return <Text>Doors</Text>;
+	return <ThemedText variant="h1">Doors</ThemedText>;
 }
