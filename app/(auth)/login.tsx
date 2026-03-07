@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
 	ActivityIndicator,
@@ -40,16 +40,12 @@ const LoginScreen = () => {
 	const onSignIn = async (values: FormValues) => {
 		resetMessage();
 		try {
-			const { data, error } = await supabase.auth.signInWithPassword(values);
+			const { error } = await supabase.auth.signInWithPassword(values);
 			if (error) {
 				setMessage(error.message);
 				return;
 			}
-			if (data?.session) {
-				router.replace("/(tabs)");
-			} else {
-				setMessage("Signed in, but no session returned.");
-			}
+			router.replace("/(tabs)");
 		} catch (err: any) {
 			setMessage(err?.message ?? "An unexpected error occurred.");
 		}
