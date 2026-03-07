@@ -7,7 +7,6 @@ import { supabase } from "@/lib/supabase";
 
 export default function HomeScreen() {
 	const [search, setSearch] = useState("");
-
 	return (
 		<ContentSafeArea>
 			<ThemedText variant="h1">Home</ThemedText>
