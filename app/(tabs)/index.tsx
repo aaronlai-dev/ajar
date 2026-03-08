@@ -1,19 +1,17 @@
 import { useState } from "react";
-import { Pressable, Text } from "react-native";
+import { Pressable, ScrollView, Text } from "react-native";
 import { ContentSafeArea } from "@/components/layout/content-safe-area";
 import { SearchBar } from "@/components/ui/search-bar";
 import { ThemedText } from "@/components/ui/themed-text";
 import { useAuthenticatedUser } from "@/contexts/auth-context";
-import { useFollowers } from "@/hooks/use-followers";
-import { useFollowing } from "@/hooks/use-following";
+import { useRelationships } from "@/hooks/use-relationships";
 import { supabase } from "@/lib/supabase";
 
 export default function HomeScreen() {
 	const [search, setSearch] = useState("");
 	const { userId } = useAuthenticatedUser();
 
-	const { data: followers, isLoading } = useFollowers(userId);
-	const { data: following } = useFollowing(userId);
+	const { followers, following, isLoading } = useRelationships(userId);
 
 	return (
 		<ContentSafeArea>
@@ -24,22 +22,40 @@ export default function HomeScreen() {
 			<SearchBar value={search} onChangeText={setSearch} />
 			{userId && <ThemedText variant="body">{userId}</ThemedText>}
 			{isLoading && <Text>Loading...</Text>}
-			{followers && followers.length > 0 && (
-				<>
-					<ThemedText variant="body">Followers: {followers.length}</ThemedText>
-					{followers.map((follower) => (
-						<Text key={follower.id}>{JSON.stringify(follower)}</Text>
-					))}
-				</>
-			)}
-			{following && following.length > 0 && (
-				<>
-					<ThemedText variant="body">Following: {following.length}</ThemedText>
-					{following.map((following) => (
-						<Text key={following.id}>{JSON.stringify(following)}</Text>
-					))}
-				</>
-			)}
+			<ScrollView>
+				{followers && (
+					<>
+						<ThemedText variant="body">
+							Pending : {followers.pending.length}
+						</ThemedText>
+						{followers.pending.map((follower) => (
+							<Text key={follower.id}>{JSON.stringify(follower)}</Text>
+						))}
+						<ThemedText variant="body">
+							Accepted : {followers.accepted.length}
+						</ThemedText>
+						{followers.accepted.map((follower) => (
+							<Text key={follower.id}>{JSON.stringify(follower)}</Text>
+						))}
+					</>
+				)}
+				{following && (
+					<>
+						<ThemedText variant="body">
+							Pending: {following.pending.length}
+						</ThemedText>
+						{following.pending.map((following) => (
+							<Text key={following.id}>{JSON.stringify(following)}</Text>
+						))}
+						<ThemedText variant="body">
+							Accepted : {following.accepted.length}
+						</ThemedText>
+						{following.accepted.map((following) => (
+							<Text key={following.id}>{JSON.stringify(following)}</Text>
+						))}
+					</>
+				)}
+			</ScrollView>
 		</ContentSafeArea>
 	);
 }
