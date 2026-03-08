@@ -1,10 +1,17 @@
+import { z } from "zod";
 import { supabase } from "@/lib/supabase";
+import { userProfileSchema } from "@/schemas/relationship.schema";
+
+// Schema for the raw Supabase response
+const followerRowSchema = z.object({
+	follower: userProfileSchema,
+});
 
 export async function getFollowers(userId: string) {
 	const { data, error } = await supabase
 		.from("relationships")
 		.select(`
-      follower:profiles!relationships_follower_id_fkey (
+      profiles!relationships_follower_id_fkey (
         id,
         username,
         first_name,
@@ -17,5 +24,11 @@ export async function getFollowers(userId: string) {
 
 	if (error) throw error;
 
-	return data?.map((row) => row.follower) ?? [];
+	// Parse and flatten the data
+	const followers = (data ?? []).map((row) => {
+		const parsed = followerRowSchema.parse(row);
+		return userProfileSchema.parse(parsed);
+	});
+
+	return followers;
 }

@@ -22,6 +22,15 @@ export default function HomeScreen() {
 				<Text>Sign Out</Text>
 			</Pressable>
 			<SearchBar value={search} onChangeText={setSearch} />
+			{followers && followers.length > 0 && (
+				<>
+					<ThemedText variant="body">Hello</ThemedText>
+					<ThemedText variant="body">Followers: {followers.length}</ThemedText>
+					{followers.map((follower) => (
+						<Text key={follower.id}>{JSON.stringify(follower)}</Text>
+					))}
+				</>
+			)}
 		</ContentSafeArea>
 	);
 }
