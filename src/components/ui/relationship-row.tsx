@@ -1,5 +1,6 @@
 import { Pressable, View } from "react-native";
 import { useAcceptFollowRequest } from "@/hooks/use-accept-follow-request";
+import { useFollow } from "@/hooks/use-follow";
 import { useRejectFollowRequest } from "@/hooks/use-reject-follow-request";
 import { useUnfollow } from "@/hooks/use-unfollow";
 import type { UserProfile } from "@/schemas/relationship.schema";
@@ -8,17 +9,25 @@ import { ThemedText } from "./themed-text";
 interface RelationshipRowProps {
 	user: UserProfile;
 	isPending: boolean;
-	isFollower: boolean;
+	isIncoming: boolean;
+	isSearching: boolean;
 }
 
 const RelationshipRow = ({
 	user,
 	isPending,
-	isFollower,
+	isIncoming,
+	isSearching,
 }: RelationshipRowProps) => {
+	const isPendingIncoming = isPending && isIncoming;
+	const isPendingOutgoing = isPending && !isIncoming;
+	const isAcceptedIncoming = !isPending && isIncoming;
+	const isAcceptedOutgoing = !isPending && !isIncoming;
+
 	const rejectMutation = useRejectFollowRequest();
 	const unfollowMutation = useUnfollow();
 	const acceptMutation = useAcceptFollowRequest();
+	const followMutation = useFollow();
 
 	const HandleAccept = (pendingId: string) => {
 		acceptMutation.mutate(pendingId);
@@ -30,6 +39,10 @@ const RelationshipRow = ({
 
 	const HandleUnfollow = (unfollowId: string) => {
 		unfollowMutation.mutate(unfollowId);
+	};
+
+	const HandleAdd = (userId: string) => {
+		followMutation.mutate(userId);
 	};
 
 	return (
@@ -53,7 +66,7 @@ const RelationshipRow = ({
 			</View>
 
 			{/* Action Buttons */}
-			{isPending && isFollower ? (
+			{isPendingIncoming ? (
 				// Pending follower requests - show Accept/Reject
 				<View className="flex-row gap-2">
 					<Pressable
@@ -69,21 +82,28 @@ const RelationshipRow = ({
 						<ThemedText variant="body">Reject</ThemedText>
 					</Pressable>
 				</View>
-			) : isPending && !isFollower ? (
-				// Pending following requests - show Pending badge
+			) : isPendingOutgoing || isAcceptedOutgoing ? (
+				// User sent follow request - show cancel request
 				<Pressable
 					className="border border-gray-300 px-4 py-2 rounded-lg"
 					onPress={() => HandleUnfollow(user.id)}
 				>
 					<ThemedText variant="body">Cancel</ThemedText>
 				</Pressable>
-			) : !isFollower ? (
-				// Accepted following - show Unfollow button
+			) : isAcceptedOutgoing ? (
+				// User already follows this person - show Unfollow button
 				<Pressable
 					className="border border-gray-300 px-4 py-2 rounded-lg"
 					onPress={() => HandleUnfollow(user.id)}
 				>
 					<ThemedText variant="body">Unfollow</ThemedText>
+				</Pressable>
+			) : isSearching ? (
+				<Pressable
+					className="bg-blue-500 px-4 py-2 rounded-lg"
+					onPress={() => HandleAdd(user.id)}
+				>
+					<ThemedText variant="body">Add</ThemedText>
 				</Pressable>
 			) : null}
 		</View>

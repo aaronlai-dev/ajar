@@ -75,7 +75,8 @@ const RelationshipTabs = ({ followers, following }: RelationshipTabsProps) => {
 					<RelationshipRow
 						user={item}
 						isPending={section.isPending}
-						isFollower={activeTab === "followers"}
+						isIncoming={activeTab === "followers"}
+						isSearching={false}
 					/>
 				)}
 				ListEmptyComponent={
