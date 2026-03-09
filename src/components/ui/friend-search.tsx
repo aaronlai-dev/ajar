@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Image, Pressable, View } from "react-native";
+import { useFollow } from "@/hooks/use-follow";
 import { useSearchProfiles } from "@/hooks/use-search-profiles";
 import { useDebounce } from "@/utils/use-debounce";
 import { SearchBar } from "./search-bar";
@@ -17,6 +18,7 @@ interface SearchResult {
 
 const FriendSearch = () => {
 	const [searchTerm, setSearchTerm] = useState("");
+	const followMutation = useFollow();
 
 	// Debounce search term by 300ms
 	const debouncedSearchTerm = useDebounce(searchTerm, 300);
@@ -34,8 +36,8 @@ const FriendSearch = () => {
 		return result.username;
 	};
 
-	function handleAddFriend(userId: string) {
-		console.log("handle add friend", userId);
+	function handleAddFriend(requestFollowId: string) {
+		followMutation.mutate(requestFollowId);
 	}
 
 	return (
@@ -58,14 +60,14 @@ const FriendSearch = () => {
 				!error &&
 				(!searchResults || searchResults.length === 0) &&
 				debouncedSearchTerm.length >= 2 && (
-					<View className="text-center py-8 text-gray-500">
+					<ThemedText variant="body" className="text-center py-8 text-gray-500">
 						No users found matching {debouncedSearchTerm}
-					</View>
+					</ThemedText>
 				)}
 
 			{!isLoading && searchResults && searchResults.length > 0 && (
 				<View className="space-y-2">
-					{searchResults.map((user) => (
+					{searchResults.map((user: SearchResult) => (
 						<View
 							key={user.id}
 							className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50"
