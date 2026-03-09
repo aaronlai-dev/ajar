@@ -49,7 +49,7 @@ const RelationshipTabs = ({ followers, following }: RelationshipTabsProps) => {
 				</Pressable>
 			</View>
 
-			{/* Relationship list */}
+			{/*Relationship list */}
 			<SectionList
 				style={{ flex: 1 }}
 				sections={[

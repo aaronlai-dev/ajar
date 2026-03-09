@@ -1,4 +1,7 @@
 import { Pressable, View } from "react-native";
+import { useAcceptFollowRequest } from "@/hooks/use-accept-follow-request";
+import { useRejectFollowRequest } from "@/hooks/use-reject-follow-request";
+import { useUnfollow } from "@/hooks/use-unfollow";
 import type { UserProfile } from "@/schemas/relationship.schema";
 import { ThemedText } from "./themed-text";
 
@@ -13,19 +16,20 @@ const RelationshipRow = ({
 	isPending,
 	isFollower,
 }: RelationshipRowProps) => {
-	const handleAccept = () => {
-		// TODO: Implement accept logic
-		console.log("Accept:", user.id);
+	const rejectMutation = useRejectFollowRequest();
+	const unfollowMutation = useUnfollow();
+	const acceptMutation = useAcceptFollowRequest();
+
+	const HandleAccept = (pendingId: string) => {
+		acceptMutation.mutate(pendingId);
 	};
 
-	const handleReject = () => {
-		// TODO: Implement reject logic
-		console.log("Reject:", user.id);
+	const HandleReject = (followRequestId: string) => {
+		rejectMutation.mutate(followRequestId);
 	};
 
-	const handleUnfollow = () => {
-		// TODO: Implement unfollow logic
-		console.log("Unfollow:", user.id);
+	const HandleUnfollow = (unfollowId: string) => {
+		unfollowMutation.mutate(unfollowId);
 	};
 
 	return (
@@ -54,27 +58,30 @@ const RelationshipRow = ({
 				<View className="flex-row gap-2">
 					<Pressable
 						className="bg-blue-500 px-4 py-2 rounded-lg"
-						onPress={handleAccept}
+						onPress={() => HandleAccept(user.id)}
 					>
 						<ThemedText variant="body">Accept</ThemedText>
 					</Pressable>
 					<Pressable
 						className="bg-gray-200 px-4 py-2 rounded-lg"
-						onPress={handleReject}
+						onPress={() => HandleReject(user.id)}
 					>
 						<ThemedText variant="body">Reject</ThemedText>
 					</Pressable>
 				</View>
 			) : isPending && !isFollower ? (
 				// Pending following requests - show Pending badge
-				<View className="bg-gray-100 px-4 py-2 rounded-lg">
-					<ThemedText variant="caption">Pending</ThemedText>
-				</View>
+				<Pressable
+					className="border border-gray-300 px-4 py-2 rounded-lg"
+					onPress={() => HandleUnfollow(user.id)}
+				>
+					<ThemedText variant="body">Cancel</ThemedText>
+				</Pressable>
 			) : !isFollower ? (
 				// Accepted following - show Unfollow button
 				<Pressable
 					className="border border-gray-300 px-4 py-2 rounded-lg"
-					onPress={handleUnfollow}
+					onPress={() => HandleUnfollow(user.id)}
 				>
 					<ThemedText variant="body">Unfollow</ThemedText>
 				</Pressable>

@@ -2,7 +2,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { getFollowers, getFollowing } from "@/api/get-relationships";
 
-export function useRelationships(userId: string) {
+function useRelationships(userId: string) {
 	const followersQuery = useQuery({
 		queryKey: ["relationships", "followers", userId],
 		queryFn: () => getFollowers(userId),
@@ -38,3 +38,5 @@ export function useRelationships(userId: string) {
 		},
 	};
 }
+
+export { useRelationships };

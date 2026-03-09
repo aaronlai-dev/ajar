@@ -6,7 +6,7 @@ const relationshipRowSchema = z.object({
 	user: userProfileSchema,
 });
 
-export async function getFollowers(userId: string) {
+async function getFollowers(userId: string) {
 	const { data, error } = await supabase
 		.from("relationships")
 		.select(`
@@ -28,7 +28,7 @@ export async function getFollowers(userId: string) {
 	}));
 }
 
-export async function getFollowing(userId: string) {
+async function getFollowing(userId: string) {
 	const { data, error } = await supabase
 		.from("relationships")
 		.select(`
@@ -49,3 +49,5 @@ export async function getFollowing(userId: string) {
 		status: row.status,
 	}));
 }
+
+export { getFollowers, getFollowing };
