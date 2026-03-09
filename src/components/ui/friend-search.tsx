@@ -19,8 +19,6 @@ const FriendSearch = () => {
 		error,
 	} = useSearchProfiles(debouncedSearchTerm);
 
-	console.log(searchResults);
-
 	return (
 		<View className="w-full ">
 			<SearchBar value={searchTerm} onChangeText={setSearchTerm} />
