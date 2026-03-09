@@ -1,4 +1,4 @@
-import { TouchableOpacity, View } from "react-native";
+import { Pressable, View } from "react-native";
 import type { UserProfile } from "@/schemas/relationship.schema";
 import { ThemedText } from "./themed-text";
 
@@ -52,18 +52,18 @@ const RelationshipRow = ({
 			{isPending && isFollower ? (
 				// Pending follower requests - show Accept/Reject
 				<View className="flex-row gap-2">
-					<TouchableOpacity
+					<Pressable
 						className="bg-blue-500 px-4 py-2 rounded-lg"
 						onPress={handleAccept}
 					>
 						<ThemedText variant="body">Accept</ThemedText>
-					</TouchableOpacity>
-					<TouchableOpacity
+					</Pressable>
+					<Pressable
 						className="bg-gray-200 px-4 py-2 rounded-lg"
 						onPress={handleReject}
 					>
 						<ThemedText variant="body">Reject</ThemedText>
-					</TouchableOpacity>
+					</Pressable>
 				</View>
 			) : isPending && !isFollower ? (
 				// Pending following requests - show Pending badge
@@ -72,12 +72,12 @@ const RelationshipRow = ({
 				</View>
 			) : !isFollower ? (
 				// Accepted following - show Unfollow button
-				<TouchableOpacity
+				<Pressable
 					className="border border-gray-300 px-4 py-2 rounded-lg"
 					onPress={handleUnfollow}
 				>
 					<ThemedText variant="body">Unfollow</ThemedText>
-				</TouchableOpacity>
+				</Pressable>
 			) : null}
 		</View>
 	);

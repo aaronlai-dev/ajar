@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { Pressable, ScrollView, Text } from "react-native";
+import { ActivityIndicator, Pressable, Text, View } from "react-native";
 import { ContentSafeArea } from "@/components/layout/content-safe-area";
+import { RelationshipTabs } from "@/components/layout/relationship-tabs";
 import { SearchBar } from "@/components/ui/search-bar";
 import { ThemedText } from "@/components/ui/themed-text";
 import { useAuthenticatedUser } from "@/contexts/auth-context";
@@ -20,42 +21,13 @@ export default function HomeScreen() {
 				<Text>Sign Out</Text>
 			</Pressable>
 			<SearchBar value={search} onChangeText={setSearch} />
-			{userId && <ThemedText variant="body">{userId}</ThemedText>}
-			{isLoading && <Text>Loading...</Text>}
-			<ScrollView>
-				{followers && (
-					<>
-						<ThemedText variant="body">
-							Pending : {followers.pending.length}
-						</ThemedText>
-						{followers.pending.map((follower) => (
-							<Text key={follower.id}>{JSON.stringify(follower)}</Text>
-						))}
-						<ThemedText variant="body">
-							Accepted : {followers.accepted.length}
-						</ThemedText>
-						{followers.accepted.map((follower) => (
-							<Text key={follower.id}>{JSON.stringify(follower)}</Text>
-						))}
-					</>
-				)}
-				{following && (
-					<>
-						<ThemedText variant="body">
-							Pending: {following.pending.length}
-						</ThemedText>
-						{following.pending.map((following) => (
-							<Text key={following.id}>{JSON.stringify(following)}</Text>
-						))}
-						<ThemedText variant="body">
-							Accepted : {following.accepted.length}
-						</ThemedText>
-						{following.accepted.map((following) => (
-							<Text key={following.id}>{JSON.stringify(following)}</Text>
-						))}
-					</>
-				)}
-			</ScrollView>
+			{isLoading ? (
+				<View className="flex-1 items-center justify-center">
+					<ActivityIndicator size="large" color="#3b82f6" />
+				</View>
+			) : (
+				<RelationshipTabs followers={followers} following={following} />
+			)}
 		</ContentSafeArea>
 	);
 }

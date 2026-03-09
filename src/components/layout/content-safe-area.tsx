@@ -8,7 +8,9 @@ interface ContentSafeAreaProps {
 }
 
 const ContentSafeArea = ({ children }: ContentSafeAreaProps) => {
-	return <StyledSafeAreaView className="px-lg">{children}</StyledSafeAreaView>;
+	return (
+		<StyledSafeAreaView className="flex-1 px-lg">{children}</StyledSafeAreaView>
+	);
 };
 
 export { ContentSafeArea };
