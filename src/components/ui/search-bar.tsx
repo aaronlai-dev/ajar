@@ -8,9 +8,16 @@ import { Keyboard, Pressable, TextInput, View } from "react-native";
 interface SearchBarProps {
 	value: string;
 	onChangeText: (text: string) => void;
+	onFocus?: () => void;
+	autoFocus?: boolean;
 }
 
-const SearchBar = ({ value, onChangeText }: SearchBarProps) => {
+const SearchBar = ({
+	value,
+	onChangeText,
+	onFocus,
+	autoFocus = false,
+}: SearchBarProps) => {
 	return (
 		<View className="flex-row w-full gap-2 align-center">
 			<View className="flex-row flex-1 bg-accent-50 rounded-xl px-md py-2.5 gap-2 align-center">
@@ -25,6 +32,8 @@ const SearchBar = ({ value, onChangeText }: SearchBarProps) => {
 					onChangeText={onChangeText}
 					returnKeyType="search"
 					accessibilityLabel="Search"
+					onFocus={onFocus}
+					autoFocus={autoFocus}
 				/>
 
 				{/* Clear button */}
