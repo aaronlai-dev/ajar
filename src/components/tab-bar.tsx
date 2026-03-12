@@ -16,7 +16,7 @@ const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
 		switch (routeName) {
 			case "index":
 				return <HouseIcon weight={weight} color={color} size={size} />;
-			case "doors":
+			case "events":
 				return <DoorOpenIcon weight={weight} color={color} size={size} />;
 			case "friends":
 				return <UsersIcon weight={weight} color={color} size={size} />;
