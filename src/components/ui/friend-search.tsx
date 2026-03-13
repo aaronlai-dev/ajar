@@ -30,8 +30,8 @@ const FriendSearch = () => {
 	const handleFocus = () => setIsFocused(true);
 
 	const handleCancel = () => {
-		setIsFocused(false);
 		setSearchTerm("");
+		setIsFocused(false);
 	};
 
 	return (
@@ -55,7 +55,7 @@ const FriendSearch = () => {
 				<StatusBar barStyle="dark-content" />
 				<KeyboardAvoidingView
 					behavior={Platform.OS === "ios" ? "padding" : "height"}
-					className="flex-1 bg-white"
+					className="flex-1 bg-gray-400"
 				>
 					{/* Header row with search + cancel */}
 					<View className="flex-row items-center px-4 pt-14 pb-3 gap-3">
