@@ -10,18 +10,15 @@ import {
 	TextInput,
 	View,
 } from "react-native";
+import { DatePickerBottomSheet } from "@/components/form/date-picker-bottom-sheet";
 import { useAuth } from "@/contexts/auth-context";
 import { useCreateEvent } from "@/hooks/use-create-event";
 import {
 	type CreateEventFormInput,
 	CreateEventSchema,
 } from "@/schemas/event.schema";
-import { Calendar, type DateType } from "./calendar";
 
-function FieldError({ message }: { message?: string }) {
-	if (!message) return null;
-	return <Text className="text-red-500 text-xs mt-1 ml-1">{message}</Text>;
-}
+// ─── Small shared UI ──────────────────────────────────────────────────────────
 
 function Label({ children }: { children: React.ReactNode }) {
 	return (
@@ -31,7 +28,11 @@ function Label({ children }: { children: React.ReactNode }) {
 	);
 }
 
+// ─── Constants ────────────────────────────────────────────────────────────────
+
 const DEFAULT_DURATION_MS = 60 * 60 * 1000; // 1 hour
+
+// ─── Form ─────────────────────────────────────────────────────────────────────
 
 const CreateEventForm = () => {
 	const { user } = useAuth();
@@ -60,27 +61,24 @@ const CreateEventForm = () => {
 	});
 
 	const startTime = watch("start_time");
+	const endTime = watch("end_time");
 
-	// Derive a Date | undefined from the ISO string for the calendar
-	const startDate: DateType = startTime ? new Date(startTime) : new Date();
+	// When start changes, auto-fill end (+1 hr) unless end is already set
+	// and still valid (after the new start).
+	const handleStartChange = (isoString: string) => {
+		setValue("start_time", isoString, { shouldValidate: true });
 
-	const handleStartChange = (date: DateType) => {
-		if (!date) return;
-		const d = date instanceof Date ? date : new Date();
-		setValue("start_time", d.toISOString(), { shouldValidate: true });
+		const newStart = new Date(isoString);
+		const currentEnd = endTime ? new Date(endTime) : null;
 
-		// Auto-fill end_time only if not already set or if it's before the new start
-		const currentEnd = watch("end_time");
-		const autoEnd = new Date(d.getTime() + DEFAULT_DURATION_MS);
-		if (!currentEnd || new Date(currentEnd) <= d) {
+		if (!currentEnd || currentEnd <= newStart) {
+			const autoEnd = new Date(newStart.getTime() + DEFAULT_DURATION_MS);
 			setValue("end_time", autoEnd.toISOString(), { shouldValidate: true });
 		}
 	};
 
-	const handleEndChange = (date: DateType) => {
-		if (!date) return;
-		const d = date instanceof Date ? date : new Date();
-		setValue("end_time", d.toISOString(), { shouldValidate: true });
+	const handleEndChange = (isoString: string) => {
+		setValue("end_time", isoString, { shouldValidate: true });
 	};
 
 	const onSubmit = (data: CreateEventFormInput) => {
@@ -109,10 +107,14 @@ const CreateEventForm = () => {
 							/>
 						)}
 					/>
-					<FieldError message={errors.title?.message} />
+					{errors.title?.message && (
+						<Text className="text-red-500 text-xs mt-1 ml-1">
+							{errors.title.message}
+						</Text>
+					)}
 				</View>
 
-				{/* Description — optional */}
+				{/* Description */}
 				<View>
 					<Label>Description</Label>
 					<Controller
@@ -122,44 +124,42 @@ const CreateEventForm = () => {
 							<TextInput
 								className="border border-gray-300 rounded-xl px-4 py-3 text-base text-gray-900 bg-gray-50 min-h-[100px]"
 								placeholder="What's this event about? (optional)"
-								onChangeText={(text) => onChange(text || null)} // empty string → null
+								onChangeText={(text) => onChange(text || null)}
 								onBlur={onBlur}
-								value={value ?? ""} // null → empty string for display
+								value={value ?? ""}
 								multiline
 								textAlignVertical="top"
 							/>
 						)}
 					/>
-					<FieldError message={errors.description?.message} />
+					{errors.description?.message && (
+						<Text className="text-red-500 text-xs mt-1 ml-1">
+							{errors.description.message}
+						</Text>
+					)}
 				</View>
 
-				{/* Start datetime */}
-				<View>
-					<Label>Start *</Label>
-					<Calendar
-						mode="single"
-						date={startDate}
-						onChange={({ date }) => handleStartChange(date)}
-						timePicker={true}
-					/>
-					<FieldError message={errors.start_time?.message} />
-				</View>
+				{/* ── Start datetime ───────────────────────────────────────── */}
+				<DatePickerBottomSheet
+					label="Start *"
+					value={startTime}
+					onChange={handleStartChange}
+					placeholder="Select start date & time"
+					errorMessage={errors.start_time?.message}
+				/>
 
-				{/* End datetime */}
-				<View>
-					<Label>End *</Label>
-					<Calendar
-						mode="single"
-						date={watch("end_time") ? new Date(watch("end_time")) : undefined}
-						onChange={({ date }) => handleEndChange(date)}
-						timePicker={true}
-						// Prevent end from being set before start
-						minDate={startTime ? new Date(startTime) : new Date()}
-					/>
-					<FieldError message={errors.end_time?.message} />
-				</View>
+				{/* ── End datetime ─────────────────────────────────────────── */}
+				<DatePickerBottomSheet
+					label="End *"
+					value={endTime}
+					onChange={handleEndChange}
+					placeholder="Select end date & time"
+					// Prevent picking an end before the start
+					minDate={startTime ? new Date(startTime) : undefined}
+					errorMessage={errors.end_time?.message}
+				/>
 
-				{/* Address — optional */}
+				{/* Address */}
 				<View>
 					<Label>Address</Label>
 					<Controller
@@ -175,10 +175,14 @@ const CreateEventForm = () => {
 							/>
 						)}
 					/>
-					<FieldError message={errors.address?.message} />
+					{errors.address?.message && (
+						<Text className="text-red-500 text-xs mt-1 ml-1">
+							{errors.address.message}
+						</Text>
+					)}
 				</View>
 
-				{/* Private toggle — optional with default */}
+				{/* Private toggle */}
 				<View className="flex-row items-center justify-between px-1">
 					<View>
 						<Text className="text-sm font-medium text-gray-700">
