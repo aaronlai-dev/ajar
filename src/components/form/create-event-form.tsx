@@ -16,6 +16,7 @@ import {
 	type CreateEventFormInput,
 	CreateEventSchema,
 } from "@/schemas/event.schema";
+import { Calendar, type DateType } from "./calendar";
 
 function FieldError({ message }: { message?: string }) {
 	if (!message) return null;
@@ -30,7 +31,9 @@ function Label({ children }: { children: React.ReactNode }) {
 	);
 }
 
-export function CreateEventForm() {
+const DEFAULT_DURATION_MS = 60 * 60 * 1000; // 1 hour
+
+const CreateEventForm = () => {
 	const { user } = useAuth();
 	const { mutate: createEvent, isPending } = useCreateEvent();
 
@@ -39,6 +42,8 @@ export function CreateEventForm() {
 		handleSubmit,
 		formState: { errors },
 		reset,
+		setValue,
+		watch,
 	} = useForm<CreateEventFormInput>({
 		resolver: zodResolver(CreateEventSchema),
 		defaultValues: {
@@ -54,6 +59,30 @@ export function CreateEventForm() {
 		},
 	});
 
+	const startTime = watch("start_time");
+
+	// Derive a Date | undefined from the ISO string for the calendar
+	const startDate: DateType = startTime ? new Date(startTime) : new Date();
+
+	const handleStartChange = (date: DateType) => {
+		if (!date) return;
+		const d = date instanceof Date ? date : new Date();
+		setValue("start_time", d.toISOString(), { shouldValidate: true });
+
+		// Auto-fill end_time only if not already set or if it's before the new start
+		const currentEnd = watch("end_time");
+		const autoEnd = new Date(d.getTime() + DEFAULT_DURATION_MS);
+		if (!currentEnd || new Date(currentEnd) <= d) {
+			setValue("end_time", autoEnd.toISOString(), { shouldValidate: true });
+		}
+	};
+
+	const handleEndChange = (date: DateType) => {
+		if (!date) return;
+		const d = date instanceof Date ? date : new Date();
+		setValue("end_time", d.toISOString(), { shouldValidate: true });
+	};
+
 	const onSubmit = (data: CreateEventFormInput) => {
 		createEvent(data, {
 			onSuccess: () => reset(),
@@ -64,7 +93,7 @@ export function CreateEventForm() {
 	return (
 		<ScrollView className="flex-1 bg-white">
 			<View className="px-4 py-6 gap-y-5">
-				{/* Title — required */}
+				{/* Title */}
 				<View>
 					<Label>Title *</Label>
 					<Controller
@@ -104,40 +133,28 @@ export function CreateEventForm() {
 					<FieldError message={errors.description?.message} />
 				</View>
 
-				{/* Start time — required */}
+				{/* Start datetime */}
 				<View>
-					<Label>Start Time *</Label>
-					<Controller
-						control={control}
-						name="start_time"
-						render={({ field: { onChange, onBlur, value } }) => (
-							<TextInput
-								className="border border-gray-300 rounded-xl px-4 py-3 text-base text-gray-900 bg-gray-50"
-								placeholder="2025-06-01T10:00:00+10:00"
-								onChangeText={onChange}
-								onBlur={onBlur}
-								value={value}
-							/>
-						)}
+					<Label>Start *</Label>
+					<Calendar
+						mode="single"
+						date={startDate}
+						onChange={({ date }) => handleStartChange(date)}
+						timePicker={true}
 					/>
 					<FieldError message={errors.start_time?.message} />
 				</View>
 
-				{/* End time — required */}
+				{/* End datetime */}
 				<View>
-					<Label>End Time *</Label>
-					<Controller
-						control={control}
-						name="end_time"
-						render={({ field: { onChange, onBlur, value } }) => (
-							<TextInput
-								className="border border-gray-300 rounded-xl px-4 py-3 text-base text-gray-900 bg-gray-50"
-								placeholder="2025-06-01T12:00:00+10:00"
-								onChangeText={onChange}
-								onBlur={onBlur}
-								value={value}
-							/>
-						)}
+					<Label>End *</Label>
+					<Calendar
+						mode="single"
+						date={watch("end_time") ? new Date(watch("end_time")) : undefined}
+						onChange={({ date }) => handleEndChange(date)}
+						timePicker={true}
+						// Prevent end from being set before start
+						minDate={startTime ? new Date(startTime) : new Date()}
 					/>
 					<FieldError message={errors.end_time?.message} />
 				</View>
@@ -204,4 +221,6 @@ export function CreateEventForm() {
 			</View>
 		</ScrollView>
 	);
-}
+};
+
+export { CreateEventForm };

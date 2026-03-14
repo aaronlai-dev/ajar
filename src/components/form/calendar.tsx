@@ -14,14 +14,14 @@ const icons: CalendarComponents = {
 	IconNext: <CaretRightIcon size={20} weight="bold" />,
 };
 
-export function Calendar({
+const Calendar = ({
 	className,
 	classNames,
 	showOutsideDays = true,
 	containerHeight = 280,
 	components,
 	...props
-}: CalendarProps) {
+}: CalendarProps) => {
 	const today = new Date();
 	const defaultClassNames = useDefaultClassNames();
 	const defaultStyles = useDefaultStyles();
@@ -32,7 +32,8 @@ export function Calendar({
 			showOutsideDays={showOutsideDays}
 			containerHeight={containerHeight}
 			disableYearPicker
-			className={`w-[310px] rounded-xl border border-muted bg-card p-2 shadow-lg ${className ?? ""}`}
+			timePicker={false}
+			className={`w-77.5 rounded-xl border border-muted bg-card p-2 shadow-lg ${className ?? ""}`}
 			classNames={{
 				...defaultClassNames,
 				day_cell: "p-1",
@@ -54,6 +55,6 @@ export function Calendar({
 			{...props}
 		/>
 	);
-}
+};
 
-export { DateType, CalendarDay };
+export { Calendar, DateType, CalendarDay };
