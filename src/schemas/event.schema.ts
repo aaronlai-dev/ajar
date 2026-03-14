@@ -25,4 +25,6 @@ export const CreateEventSchema = z
 		path: ["end_time"],
 	});
 
-export type CreateEventInput = z.infer<typeof CreateEventSchema>;
+export type CreateEventFormInput = z.input<typeof CreateEventSchema>;
+
+export type CreateEventOutput = z.output<typeof CreateEventSchema>;

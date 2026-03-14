@@ -1,10 +1,10 @@
 import { supabase } from "@/lib/supabase";
 import {
-	type CreateEventInput,
+	type CreateEventOutput,
 	CreateEventSchema,
 } from "@/schemas/event.schema";
 
-async function createEvent(input: CreateEventInput) {
+async function createEvent(input: CreateEventOutput) {
 	const validated = CreateEventSchema.parse(input);
 
 	const { data, error } = await supabase
