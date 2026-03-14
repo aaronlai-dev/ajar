@@ -54,6 +54,13 @@ function RootLayoutNav() {
 				<Stack.Screen name="(auth)/login" options={{ headerShown: false }} />
 				<Stack.Screen name="(auth)/signup" options={{ headerShown: false }} />
 				<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+				<Stack.Screen
+					name="modal"
+					options={{
+						presentation: "fullScreenModal",
+						headerShown: false,
+					}}
+				/>
 			</Stack>
 			<StatusBar style="auto" />
 		</>
