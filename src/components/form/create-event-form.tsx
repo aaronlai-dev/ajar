@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import DateTimePicker from "@react-native-community/datetimepicker";
+import { useRouter } from "expo-router";
 import type React from "react";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -17,6 +17,7 @@ import {
 	type CreateEventFormInput,
 	CreateEventSchema,
 } from "@/schemas/event.schema";
+import { DateTimeField } from "./datetime-input";
 
 // ─── Small shared UI ──────────────────────────────────────────────────────────
 
@@ -25,42 +26,6 @@ function Label({ children }: { children: React.ReactNode }) {
 		<Text className="text-sm font-medium text-gray-700 mb-1 ml-1">
 			{children}
 		</Text>
-	);
-}
-
-// ─── Date/Time Picker Field ───────────────────────────────────────────────────
-
-interface DateTimeFieldProps {
-	label: string;
-	value: Date;
-	minimumDate?: Date;
-	onChange: (date: Date) => void;
-	error?: string;
-}
-
-function DateTimeField({
-	label,
-	value,
-	minimumDate,
-	onChange,
-	error,
-}: DateTimeFieldProps) {
-	const handleChange = (_event: unknown, selected?: Date) => {
-		if (selected) onChange(selected);
-	};
-
-	return (
-		<View>
-			<Label>{label}</Label>
-			<DateTimePicker
-				value={value}
-				mode="datetime"
-				display="compact"
-				minimumDate={minimumDate}
-				onValueChange={handleChange}
-			/>
-			{error && <Text className="text-red-500 text-xs mt-1 ml-1">{error}</Text>}
-		</View>
 	);
 }
 
@@ -75,6 +40,7 @@ function toISO(date: Date): string {
 // ─── Form ─────────────────────────────────────────────────────────────────────
 
 const CreateEventForm = () => {
+	const router = useRouter();
 	const { user } = useAuth();
 	const { mutate: createEvent, isPending } = useCreateEvent();
 
@@ -131,13 +97,11 @@ const CreateEventForm = () => {
 		createEvent(data, {
 			onSuccess: () => {
 				reset();
-				const freshStart = new Date();
-				const freshEnd = new Date(freshStart.getTime() + DEFAULT_DURATION_MS);
-				setStartDate(freshStart);
-				setEndDate(freshEnd);
 			},
 			onError: (err) => console.error(err.message),
 		});
+
+		router.back();
 	};
 
 	return (
@@ -192,7 +156,7 @@ const CreateEventForm = () => {
 
 			{/* Start Date/Time */}
 			<DateTimeField
-				label="Start Date & Time *"
+				label="Start"
 				value={startDate}
 				onChange={handleStartChange}
 				error={errors.start_time?.message}
@@ -200,7 +164,7 @@ const CreateEventForm = () => {
 
 			{/* End Date/Time */}
 			<DateTimeField
-				label="End Date & Time *"
+				label="End"
 				value={endDate}
 				minimumDate={startDate}
 				onChange={handleEndChange}

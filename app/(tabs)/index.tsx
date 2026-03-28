@@ -1,5 +1,4 @@
 import { Pressable, Text } from "react-native";
-import { CreateEventForm } from "@/components/form/create-event-form";
 import { ContentSafeArea } from "@/components/layout/content-safe-area";
 import { ThemedText } from "@/components/ui/themed-text";
 import { supabase } from "@/lib/supabase";
@@ -11,7 +10,6 @@ export default function HomeScreen() {
 			<Pressable onPress={async () => await supabase.auth.signOut()}>
 				<Text>Sign Out</Text>
 			</Pressable>
-			<CreateEventForm />
 		</ContentSafeArea>
 	);
 }
