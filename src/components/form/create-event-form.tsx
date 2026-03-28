@@ -4,7 +4,6 @@ import { Controller, useForm } from "react-hook-form";
 import {
 	ActivityIndicator,
 	Pressable,
-	ScrollView,
 	Switch,
 	Text,
 	TextInput,
@@ -89,141 +88,139 @@ const CreateEventForm = () => {
 	};
 
 	return (
-		<ScrollView className="flex-1 bg-white">
-			<View className="px-4 py-6 gap-y-5">
-				{/* Title */}
-				<View>
-					<Label>Title *</Label>
-					<Controller
-						control={control}
-						name="title"
-						render={({ field: { onChange, onBlur, value } }) => (
-							<TextInput
-								className="border border-gray-300 rounded-xl px-4 py-3 text-base text-gray-900 bg-gray-50"
-								placeholder="Event title"
-								onChangeText={onChange}
-								onBlur={onBlur}
-								value={value}
-							/>
-						)}
-					/>
-					{errors.title?.message && (
-						<Text className="text-red-500 text-xs mt-1 ml-1">
-							{errors.title.message}
-						</Text>
+		<View className="gap-y-5">
+			{/* Title */}
+			<View>
+				<Label>Title *</Label>
+				<Controller
+					control={control}
+					name="title"
+					render={({ field: { onChange, onBlur, value } }) => (
+						<TextInput
+							className="border border-gray-300 rounded-xl px-4 py-3 text-base text-gray-900 bg-gray-50"
+							placeholder="Event title"
+							onChangeText={onChange}
+							onBlur={onBlur}
+							value={value}
+						/>
 					)}
-				</View>
-
-				{/* Description */}
-				<View>
-					<Label>Description</Label>
-					<Controller
-						control={control}
-						name="description"
-						render={({ field: { onChange, onBlur, value } }) => (
-							<TextInput
-								className="border border-gray-300 rounded-xl px-4 py-3 text-base text-gray-900 bg-gray-50 min-h-[100px]"
-								placeholder="What's this event about? (optional)"
-								onChangeText={(text) => onChange(text || null)}
-								onBlur={onBlur}
-								value={value ?? ""}
-								multiline
-								textAlignVertical="top"
-							/>
-						)}
-					/>
-					{errors.description?.message && (
-						<Text className="text-red-500 text-xs mt-1 ml-1">
-							{errors.description.message}
-						</Text>
-					)}
-				</View>
-
-				{/* ── Start datetime ───────────────────────────────────────── */}
-				<DatePickerBottomSheet
-					label="Start *"
-					value={startTime}
-					onChange={handleStartChange}
-					placeholder="Select start date & time"
-					errorMessage={errors.start_time?.message}
 				/>
-
-				{/* ── End datetime ─────────────────────────────────────────── */}
-				<DatePickerBottomSheet
-					label="End *"
-					value={endTime}
-					onChange={handleEndChange}
-					placeholder="Select end date & time"
-					// Prevent picking an end before the start
-					minDate={startTime ? new Date(startTime) : undefined}
-					errorMessage={errors.end_time?.message}
-				/>
-
-				{/* Address */}
-				<View>
-					<Label>Address</Label>
-					<Controller
-						control={control}
-						name="address"
-						render={({ field: { onChange, onBlur, value } }) => (
-							<TextInput
-								className="border border-gray-300 rounded-xl px-4 py-3 text-base text-gray-900 bg-gray-50"
-								placeholder="123 Example St (optional)"
-								onChangeText={(text) => onChange(text || null)}
-								onBlur={onBlur}
-								value={value ?? ""}
-							/>
-						)}
-					/>
-					{errors.address?.message && (
-						<Text className="text-red-500 text-xs mt-1 ml-1">
-							{errors.address.message}
-						</Text>
-					)}
-				</View>
-
-				{/* Private toggle */}
-				<View className="flex-row items-center justify-between px-1">
-					<View>
-						<Text className="text-sm font-medium text-gray-700">
-							Private Event
-						</Text>
-						<Text className="text-xs text-gray-400 mt-0.5">
-							Only invited guests can see this
-						</Text>
-					</View>
-					<Controller
-						control={control}
-						name="is_private"
-						render={({ field: { onChange, value } }) => (
-							<Switch
-								onValueChange={onChange}
-								value={value}
-								trackColor={{ false: "#d1d5db", true: "#6366f1" }}
-								thumbColor="#ffffff"
-							/>
-						)}
-					/>
-				</View>
-
-				{/* Submit */}
-				<Pressable
-					className={`rounded-xl py-4 items-center mt-2 ${
-						isPending ? "bg-indigo-300" : "bg-indigo-500"
-					}`}
-					onPress={handleSubmit(onSubmit)}
-					disabled={isPending}
-				>
-					{isPending ? (
-						<ActivityIndicator color="#ffffff" />
-					) : (
-						<Text className="text-white font-semibold text-base">
-							Create Event
-						</Text>
-					)}
-				</Pressable>
+				{errors.title?.message && (
+					<Text className="text-red-500 text-xs mt-1 ml-1">
+						{errors.title.message}
+					</Text>
+				)}
 			</View>
-		</ScrollView>
+
+			{/* Description */}
+			<View>
+				<Label>Description</Label>
+				<Controller
+					control={control}
+					name="description"
+					render={({ field: { onChange, onBlur, value } }) => (
+						<TextInput
+							className="border border-gray-300 rounded-xl px-4 py-3 text-base text-gray-900 bg-gray-50 min-h-[100px]"
+							placeholder="What's this event about? (optional)"
+							onChangeText={(text) => onChange(text || null)}
+							onBlur={onBlur}
+							value={value ?? ""}
+							multiline
+							textAlignVertical="top"
+						/>
+					)}
+				/>
+				{errors.description?.message && (
+					<Text className="text-red-500 text-xs mt-1 ml-1">
+						{errors.description.message}
+					</Text>
+				)}
+			</View>
+
+			{/* ── Start datetime ───────────────────────────────────────── */}
+			<DatePickerBottomSheet
+				label="Start *"
+				value={startTime}
+				onChange={handleStartChange}
+				placeholder="Select start date & time"
+				errorMessage={errors.start_time?.message}
+			/>
+
+			{/* ── End datetime ─────────────────────────────────────────── */}
+			<DatePickerBottomSheet
+				label="End *"
+				value={endTime}
+				onChange={handleEndChange}
+				placeholder="Select end date & time"
+				// Prevent picking an end before the start
+				minDate={startTime ? new Date(startTime) : undefined}
+				errorMessage={errors.end_time?.message}
+			/>
+
+			{/* Address */}
+			<View>
+				<Label>Address</Label>
+				<Controller
+					control={control}
+					name="address"
+					render={({ field: { onChange, onBlur, value } }) => (
+						<TextInput
+							className="border border-gray-300 rounded-xl px-4 py-3 text-base text-gray-900 bg-gray-50"
+							placeholder="123 Example St (optional)"
+							onChangeText={(text) => onChange(text || null)}
+							onBlur={onBlur}
+							value={value ?? ""}
+						/>
+					)}
+				/>
+				{errors.address?.message && (
+					<Text className="text-red-500 text-xs mt-1 ml-1">
+						{errors.address.message}
+					</Text>
+				)}
+			</View>
+
+			{/* Private toggle */}
+			<View className="flex-row items-center justify-between px-1">
+				<View>
+					<Text className="text-sm font-medium text-gray-700">
+						Private Event
+					</Text>
+					<Text className="text-xs text-gray-400 mt-0.5">
+						Only invited guests can see this
+					</Text>
+				</View>
+				<Controller
+					control={control}
+					name="is_private"
+					render={({ field: { onChange, value } }) => (
+						<Switch
+							onValueChange={onChange}
+							value={value}
+							trackColor={{ false: "#d1d5db", true: "#6366f1" }}
+							thumbColor="#ffffff"
+						/>
+					)}
+				/>
+			</View>
+
+			{/* Submit */}
+			<Pressable
+				className={`rounded-xl py-4 items-center mt-2 ${
+					isPending ? "bg-indigo-300" : "bg-indigo-500"
+				}`}
+				onPress={handleSubmit(onSubmit)}
+				disabled={isPending}
+			>
+				{isPending ? (
+					<ActivityIndicator color="#ffffff" />
+				) : (
+					<Text className="text-white font-semibold text-base">
+						Create Event
+					</Text>
+				)}
+			</Pressable>
+		</View>
 	);
 };
 
