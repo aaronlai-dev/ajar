@@ -4,7 +4,7 @@ import { Pressable, View } from "react-native";
 import { ContentSafeArea } from "@/components/layout/content-safe-area";
 import { ThemedText } from "@/components/ui/themed-text";
 
-export default function HomeScreen() {
+export default function Modal() {
 	const router = useRouter();
 	return (
 		<ContentSafeArea>
