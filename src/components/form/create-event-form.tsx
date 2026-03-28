@@ -1,5 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import DateTimePicker from "@react-native-community/datetimepicker";
 import type React from "react";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
 	ActivityIndicator,
@@ -9,7 +11,6 @@ import {
 	TextInput,
 	View,
 } from "react-native";
-import { DatePickerBottomSheet } from "@/components/form/date-picker-bottom-sheet";
 import { useAuth } from "@/contexts/auth-context";
 import { useCreateEvent } from "@/hooks/use-create-event";
 import {
@@ -27,9 +28,49 @@ function Label({ children }: { children: React.ReactNode }) {
 	);
 }
 
-// ─── Constants ────────────────────────────────────────────────────────────────
+// ─── Date/Time Picker Field ───────────────────────────────────────────────────
+
+interface DateTimeFieldProps {
+	label: string;
+	value: Date;
+	minimumDate?: Date;
+	onChange: (date: Date) => void;
+	error?: string;
+}
+
+function DateTimeField({
+	label,
+	value,
+	minimumDate,
+	onChange,
+	error,
+}: DateTimeFieldProps) {
+	const handleChange = (_event: unknown, selected?: Date) => {
+		if (selected) onChange(selected);
+	};
+
+	return (
+		<View>
+			<Label>{label}</Label>
+			<DateTimePicker
+				value={value}
+				mode="datetime"
+				display="compact"
+				minimumDate={minimumDate}
+				onValueChange={handleChange}
+			/>
+			{error && <Text className="text-red-500 text-xs mt-1 ml-1">{error}</Text>}
+		</View>
+	);
+}
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
 
 const DEFAULT_DURATION_MS = 60 * 60 * 1000; // 1 hour
+
+function toISO(date: Date): string {
+	return date.toISOString();
+}
 
 // ─── Form ─────────────────────────────────────────────────────────────────────
 
@@ -37,20 +78,28 @@ const CreateEventForm = () => {
 	const { user } = useAuth();
 	const { mutate: createEvent, isPending } = useCreateEvent();
 
+	// Local Date objects drive the pickers; ISO strings are written to the form.
+	const defaultStart = new Date();
+	defaultStart.setMinutes(0, 0, 0); // zero out minutes, seconds, ms
+	defaultStart.setHours(defaultStart.getHours() + 1); // advance to next hour
+	const defaultEnd = new Date(defaultStart.getTime() + DEFAULT_DURATION_MS);
+
+	const [startDate, setStartDate] = useState<Date>(defaultStart);
+	const [endDate, setEndDate] = useState<Date>(defaultEnd);
+
 	const {
 		control,
 		handleSubmit,
 		formState: { errors },
 		reset,
 		setValue,
-		watch,
 	} = useForm<CreateEventFormInput>({
 		resolver: zodResolver(CreateEventSchema),
 		defaultValues: {
 			creator_id: user?.id ?? "",
 			title: "",
-			start_time: "",
-			end_time: "",
+			start_time: toISO(defaultStart),
+			end_time: toISO(defaultEnd),
 			description: null,
 			address: null,
 			place_id: null,
@@ -59,30 +108,34 @@ const CreateEventForm = () => {
 		},
 	});
 
-	const startTime = watch("start_time");
-	const endTime = watch("end_time");
+	// Keep local state + form field in sync for start time.
+	const handleStartChange = (date: Date) => {
+		setStartDate(date);
+		setValue("start_time", toISO(date), { shouldValidate: true });
 
-	// When start changes, auto-fill end (+1 hr) unless end is already set
-	// and still valid (after the new start).
-	const handleStartChange = (isoString: string) => {
-		setValue("start_time", isoString, { shouldValidate: true });
-
-		const newStart = new Date(isoString);
-		const currentEnd = endTime ? new Date(endTime) : null;
-
-		if (!currentEnd || currentEnd <= newStart) {
-			const autoEnd = new Date(newStart.getTime() + DEFAULT_DURATION_MS);
-			setValue("end_time", autoEnd.toISOString(), { shouldValidate: true });
+		// Push end time forward if it would be before the new start.
+		if (date >= endDate) {
+			const newEnd = new Date(date.getTime() + DEFAULT_DURATION_MS);
+			setEndDate(newEnd);
+			setValue("end_time", toISO(newEnd), { shouldValidate: true });
 		}
 	};
 
-	const handleEndChange = (isoString: string) => {
-		setValue("end_time", isoString, { shouldValidate: true });
+	// Keep local state + form field in sync for end time.
+	const handleEndChange = (date: Date) => {
+		setEndDate(date);
+		setValue("end_time", toISO(date), { shouldValidate: true });
 	};
 
 	const onSubmit = (data: CreateEventFormInput) => {
 		createEvent(data, {
-			onSuccess: () => reset(),
+			onSuccess: () => {
+				reset();
+				const freshStart = new Date();
+				const freshEnd = new Date(freshStart.getTime() + DEFAULT_DURATION_MS);
+				setStartDate(freshStart);
+				setEndDate(freshEnd);
+			},
 			onError: (err) => console.error(err.message),
 		});
 	};
@@ -137,24 +190,21 @@ const CreateEventForm = () => {
 				)}
 			</View>
 
-			{/* ── Start datetime ───────────────────────────────────────── */}
-			<DatePickerBottomSheet
-				label="Start *"
-				value={startTime}
+			{/* Start Date/Time */}
+			<DateTimeField
+				label="Start Date & Time *"
+				value={startDate}
 				onChange={handleStartChange}
-				placeholder="Select start date & time"
-				errorMessage={errors.start_time?.message}
+				error={errors.start_time?.message}
 			/>
 
-			{/* ── End datetime ─────────────────────────────────────────── */}
-			<DatePickerBottomSheet
-				label="End *"
-				value={endTime}
+			{/* End Date/Time */}
+			<DateTimeField
+				label="End Date & Time *"
+				value={endDate}
+				minimumDate={startDate}
 				onChange={handleEndChange}
-				placeholder="Select end date & time"
-				// Prevent picking an end before the start
-				minDate={startTime ? new Date(startTime) : undefined}
-				errorMessage={errors.end_time?.message}
+				error={errors.end_time?.message}
 			/>
 
 			{/* Address */}
