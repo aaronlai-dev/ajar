@@ -62,6 +62,7 @@ const RelationshipTabs = ({ followers, following }: RelationshipTabsProps) => {
 						<ThemedText variant="body">No {activeTab} yet</ThemedText>
 					</View>
 				}
+				showsVerticalScrollIndicator={false}
 			/>
 		</View>
 	);
