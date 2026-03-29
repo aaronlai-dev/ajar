@@ -1,3 +1,4 @@
+import { CheckIcon, PlusIcon, XIcon } from "phosphor-react-native";
 import { View } from "react-native";
 import { useAcceptFollowRequest } from "@/hooks/use-accept-follow-request";
 import { useFollow } from "@/hooks/use-follow";
@@ -69,16 +70,16 @@ const RelationshipRow = ({
 			{/* Action Buttons */}
 			{isPendingIncoming ? (
 				// Pending follower requests - show Accept/Reject
-				<View className="flex-row gap-2">
+				<View className="flex-row gap-1">
 					<PendingFriendActionButton
 						bgColor="bg-blue-200"
 						onPress={() => HandleAccept(user.id)}
-						text="Accept"
+						icon={<CheckIcon size={16} />}
 					/>
 					<PendingFriendActionButton
 						bgColor="bg-gray-200"
 						onPress={() => HandleReject(user.id)}
-						text="Reject"
+						icon={<XIcon size={16} />}
 					/>
 				</View>
 			) : isPendingOutgoing || isAcceptedOutgoing ? (
@@ -86,20 +87,20 @@ const RelationshipRow = ({
 				<PendingFriendActionButton
 					bgColor="border-gray-300"
 					onPress={() => HandleUnfollow(user.id)}
-					text="Cancel"
+					icon={<XIcon size={16} />}
 				/>
 			) : isAcceptedOutgoing ? (
 				// User already follows this person - show Unfollow button
 				<PendingFriendActionButton
 					bgColor="border-gray-300"
 					onPress={() => HandleUnfollow(user.id)}
-					text="Unfollow"
+					icon={<XIcon size={16} />}
 				/>
 			) : isSearching ? (
 				<PendingFriendActionButton
 					bgColor="bg-blue-500"
 					onPress={() => HandleAdd(user.id)}
-					text="Add"
+					icon={<PlusIcon size={16} />}
 				/>
 			) : null}
 		</View>
