@@ -18,7 +18,7 @@ const RelationshipTabs = ({ followers, following }: RelationshipTabsProps) => {
 	const currentData = activeTab === "followers" ? followers : following;
 
 	return (
-		<View className="flex-1 bg-white">
+		<View className="flex-1">
 			{/* Tab Header */}
 			<RelationshipListHeader
 				activeTab={activeTab}
@@ -43,9 +43,9 @@ const RelationshipTabs = ({ followers, following }: RelationshipTabsProps) => {
 					},
 				].filter((section) => section.data.length > 0)}
 				keyExtractor={(item) => item.id}
-				contentContainerStyle={{ paddingBottom: 20, flexGrow: 1 }}
+				contentContainerStyle={{ flexGrow: 1 }}
 				renderSectionHeader={({ section }) => (
-					<View className="bg-gray-50 px-4 py-2 border-b border-gray-200">
+					<View className="px-2 py-2">
 						<ThemedText variant="body">{section.title}</ThemedText>
 					</View>
 				)}
