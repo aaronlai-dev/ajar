@@ -26,7 +26,8 @@ async function getFollowingEvents(userId: string) {
       place_id,
       start_time,
       end_time,
-      is_private
+      is_private,
+      tags
     `)
 		.in("creator_id", followingIds)
 		.order("start_time", { ascending: true });

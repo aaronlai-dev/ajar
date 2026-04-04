@@ -17,6 +17,7 @@ async function createEvent(input: CreateEventOutput) {
 			is_private: validated.is_private,
 
 			description: validated.description ?? null,
+			tags: validated.tags ?? null,
 			address: validated.address ?? null,
 			place_id: validated.place_id ?? null,
 			location: validated.location

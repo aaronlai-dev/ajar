@@ -19,6 +19,7 @@ export const CreateEventSchema = z
 			.optional()
 			.nullable(),
 		is_private: z.boolean().default(false),
+		tags: z.array(z.string()).optional().nullable(),
 	})
 	.refine((data) => new Date(data.end_time) > new Date(data.start_time), {
 		message: "End time must be after start time",
