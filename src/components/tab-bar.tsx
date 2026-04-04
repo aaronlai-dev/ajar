@@ -3,7 +3,6 @@ import { PlatformPressable } from "@react-navigation/elements";
 import { useLinkBuilder } from "@react-navigation/native";
 import { DoorOpenIcon, HouseIcon, UsersIcon } from "phosphor-react-native";
 import { View } from "react-native";
-import { ThemedText } from "./ui/themed-text";
 
 const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
 	const { buildHref } = useLinkBuilder();
@@ -26,10 +25,9 @@ const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
 	};
 
 	return (
-		<View className="flex-row bg-background-secondary rounded-4xl mx-4 mb-6 w-5/6 h-17.5 self-center justify-around shadow-lg">
+		<View className="flex-row bg-background-secondary rounded-4xl mx-4 mb-6 w-3/5 h-17.5 self-center justify-around shadow-lg">
 			{state.routes.map((route, index) => {
 				const { options } = descriptors[route.key];
-				const label = options.title ?? route.name;
 
 				const isFocused = state.index === index;
 				const color = isFocused ? "#212121" : "#757575"; // text-primary : text-secondary
@@ -63,7 +61,6 @@ const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
 							}`}
 						>
 							{getIcon(route.name, isFocused, color)}
-							{isFocused && <ThemedText variant="label">{label}</ThemedText>}
 						</View>
 					</PlatformPressable>
 				);
