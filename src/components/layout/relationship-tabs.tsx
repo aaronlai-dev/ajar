@@ -18,7 +18,7 @@ const RelationshipTabs = ({ followers, following }: RelationshipTabsProps) => {
 	const currentData = activeTab === "followers" ? followers : following;
 
 	return (
-		<View className="flex-1">
+		<View className="flex-1 gap-4">
 			{/* Tab Header */}
 			<RelationshipListHeader
 				activeTab={activeTab}

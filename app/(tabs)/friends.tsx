@@ -27,7 +27,7 @@ const FriendsScreen = () => {
 				searchStyle={searchStyle}
 				titleContainerStyle={titleContainerStyle}
 			/>
-			<View className="flex-1 mt-2">
+			<View className="flex-1 mt-4">
 				<Animated.View style={[listStyle, { flex: 1 }]}>
 					<RelationshipTabs followers={followers} following={following} />
 				</Animated.View>

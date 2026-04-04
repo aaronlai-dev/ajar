@@ -20,7 +20,7 @@ const FriendSearchResults = ({ searchTerm }: FriendSearchResultsProps) => {
 	return (
 		<>
 			{/* Results */}
-			<View className="flex-1 px-4">
+			<View className="flex-1">
 				{isLoading && (
 					<View className="py-8 items-center">
 						<ThemedText variant="body" className="text-gray-500">
@@ -50,23 +50,28 @@ const FriendSearchResults = ({ searchTerm }: FriendSearchResultsProps) => {
 					)}
 
 				{!isLoading && searchResults && searchResults.length > 0 && (
-					<FlatList
-						data={searchResults}
-						keyExtractor={(item) => item.id}
-						keyboardShouldPersistTaps="handled"
-						renderItem={({ item }: { item: SearchResult }) => (
-							<RelationshipRow
-								user={item}
-								isPending={
-									item.is_incoming
-										? item.incoming_status === "pending"
-										: item.outgoing_status === "pending"
-								}
-								isIncoming={item.is_incoming}
-								isSearching={true}
-							/>
-						)}
-					/>
+					<View>
+						<ThemedText variant="caption">
+							Found {searchResults.length} result(s)
+						</ThemedText>
+						<FlatList
+							data={searchResults}
+							keyExtractor={(item) => item.id}
+							keyboardShouldPersistTaps="handled"
+							renderItem={({ item }: { item: SearchResult }) => (
+								<RelationshipRow
+									user={item}
+									isPending={
+										item.is_incoming
+											? item.incoming_status === "pending"
+											: item.outgoing_status === "pending"
+									}
+									isIncoming={item.is_incoming}
+									isSearching={true}
+								/>
+							)}
+						/>
+					</View>
 				)}
 			</View>
 		</>
