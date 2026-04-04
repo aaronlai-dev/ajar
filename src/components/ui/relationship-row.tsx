@@ -6,6 +6,7 @@ import { useRejectFollowRequest } from "@/hooks/use-reject-follow-request";
 import { useUnfollow } from "@/hooks/use-unfollow";
 import type { UserProfile } from "@/schemas/relationship.schema";
 import PendingFriendActionButton from "./pending-friend-action-button";
+import { ThemedBorder } from "./themed-border";
 import { ThemedText } from "./themed-text";
 
 interface RelationshipRowProps {
@@ -48,7 +49,7 @@ const RelationshipRow = ({
 	};
 
 	return (
-		<View className="flex-row items-center my-1 px-2 py-2 rounded-xl bg-gray-200">
+		<ThemedBorder className="flex-row items-center my-1 p-2">
 			{/* Avatar */}
 			<View className="w-8 h-8 rounded-full bg-gray-200 overflow-hidden">
 				<View className="w-full h-full items-center justify-center bg-blue-100">
@@ -103,7 +104,7 @@ const RelationshipRow = ({
 					icon={<PlusIcon size={16} />}
 				/>
 			) : null}
-		</View>
+		</ThemedBorder>
 	);
 };
 
