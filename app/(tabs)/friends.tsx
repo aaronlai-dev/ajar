@@ -30,9 +30,6 @@ const FriendsScreen = () => {
 	const width = useSharedValue(0);
 	const isOpen = useRef(false);
 
-	const animatedStyle = useAnimatedStyle(() => ({
-		width: width.value,
-	}));
 	const listStyle = useAnimatedStyle(() => ({ opacity: listOpacity.value }));
 	const searchStyle = useAnimatedStyle(() => ({
 		opacity: searchOpacity.value,
@@ -47,7 +44,7 @@ const FriendsScreen = () => {
 
 	const toggleSearch = () => {
 		if (isOpen.current) {
-			// Close
+			// Close search bar
 			width.value = withTiming(0, {
 				duration: 300,
 				easing: Easing.out(Easing.cubic),
@@ -57,7 +54,7 @@ const FriendsScreen = () => {
 			isOpen.current = false;
 			titleWidth.value = withTiming(HEADER_WIDTH, { duration: 300 });
 		} else {
-			// Open
+			// Open search bar
 			width.value = withTiming(FULL_WIDTH, {
 				duration: 300,
 				easing: Easing.out(Easing.cubic),

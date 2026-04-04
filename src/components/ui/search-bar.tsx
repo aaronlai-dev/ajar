@@ -14,9 +14,9 @@ const SearchBar = ({
 	autoFocus = false,
 }: SearchBarProps) => {
 	return (
-		<View>
+		<View className="mr-2">
 			<TextInput
-				className=" bg-accent"
+				className=" bg-accent h-full"
 				placeholder="Search for future neighbours!"
 				value={value}
 				onChangeText={onChangeText}
