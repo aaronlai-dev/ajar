@@ -8,7 +8,7 @@ import { supabase } from "@/lib/supabase";
 export default function HomeScreen() {
 	return (
 		<ContentSafeArea>
-			<ThemedText variant="h1">Home</ThemedText>
+			<ThemedText variant="h1">home</ThemedText>
 			<Pressable onPress={async () => await supabase.auth.signOut()}>
 				<Text>Sign Out</Text>
 			</Pressable>

@@ -15,8 +15,8 @@ interface CustomTextProps extends TextProps {
 }
 
 const variantClasses = {
-	h1: "text-4xl leading-4xl font-bold text-text-primary",
-	h2: "text-3xl leading-3xl font-bold text-text-primary",
+	h1: "text-4xl leading-4xl font-header text-text-primary",
+	h2: "text-3xl leading-3xl font-header text-text-primary",
 	h3: "text-2xl leading-2xl font-semibold text-text-primary",
 	h4: "text-xl leading-xl font-semibold text-text-primary",
 	h5: "text-lg leading-lg font-semibold text-text-primary",

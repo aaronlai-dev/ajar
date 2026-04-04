@@ -78,6 +78,7 @@
     --leading-5xl: 56px;
 
     /* Font Families */
+    --font-header: "GT-Maru-Medium";
     --font-regular: "Manrope-Regular";
     --font-medium: "Manrope-Medium";
     --font-semibold: "Manrope-SemiBold";

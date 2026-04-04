@@ -14,6 +14,7 @@ import { queryClient } from "@/lib/query-client";
 
 function RootLayoutNav() {
 	const [fontsLoaded] = useFonts({
+		"GT-Maru-Medium": require("@/assets/fonts/GT-Maru-Medium-Trial.otf"),
 		"Manrope-Regular": require("@/assets/fonts/Manrope-Regular.ttf"),
 		"Manrope-Medium": require("@/assets/fonts/Manrope-Medium.ttf"),
 		"Manrope-SemiBold": require("@/assets/fonts/Manrope-SemiBold.ttf"),

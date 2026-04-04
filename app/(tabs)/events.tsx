@@ -7,7 +7,7 @@ export default function EventsScreen() {
 	return (
 		<>
 			<ContentSafeArea>
-				<ThemedText variant="h1">Events</ThemedText>
+				<ThemedText variant="h1">doors</ThemedText>
 				<EventCard
 					eventName="Event Name"
 					hostName="Host Name"

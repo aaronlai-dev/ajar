@@ -45,6 +45,7 @@
         "expo-font",
         {
           "fonts": [
+            "./assets/fonts/GT-Maru-Medium-Trial.otf",
             "./assets/fonts/Manrope-Bold.ttf",
             "./assets/fonts/Manrope-SemiBold.ttf",
             "./assets/fonts/Manrope-Medium.ttf",
