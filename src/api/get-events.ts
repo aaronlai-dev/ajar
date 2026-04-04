@@ -1,8 +1,12 @@
 import { supabase } from "@/lib/supabase";
-import { CreateEventSchema } from "@/schemas/event.schema";
+import {
+	type EventResponse,
+	EventResponseSchema,
+} from "@/schemas/event.schema";
 
-async function getFollowingEvents(userId: string) {
-	// Step 1: Get all user IDs that the current user follows
+// ─── Get Following Events ─────────────────────────────────────────────────────
+
+async function getFollowingEvents(userId: string): Promise<EventResponse[]> {
 	const { data: relationships, error: relError } = await supabase
 		.from("relationships")
 		.select("following_id")
@@ -14,29 +18,47 @@ async function getFollowingEvents(userId: string) {
 
 	if (followingIds.length === 0) return [];
 
-	// Step 2: Fetch events created by those users
 	const { data: events, error: eventsError } = await supabase
 		.from("events")
 		.select(`
-      id,
-      creator_id,
-      title,
-      description,
-      location,
-      place_id,
-      start_time,
-      end_time,
-      is_private,
-      tags
-    `)
+			id,
+			creator_id,
+			created_at,
+			title,
+			description,
+			address,
+			location,
+			place_id,
+			start_time,
+			end_time,
+			is_private,
+			tags,
+			profiles!creator_id (
+				first_name,
+				last_name,
+				username
+			)
+		`)
 		.in("creator_id", followingIds)
 		.order("start_time", { ascending: true });
 
 	if (eventsError) throw eventsError;
 
-	const parsedEvents = events.map((e) => CreateEventSchema.parse(e));
-
-	return parsedEvents;
+	return events.map((e) => {
+		const { profiles, ...eventFields } = e;
+		return EventResponseSchema.parse({
+			...eventFields,
+			creator: profiles,
+		});
+	});
 }
 
-export { getFollowingEvents };
+// ─── Delete Event ─────────────────────────────────────────────────────────────
+
+async function deleteEvent(eventId: string): Promise<void> {
+	const { error } = await supabase.from("events").delete().eq("id", eventId);
+
+	if (error) throw error;
+}
+
+export { deleteEvent, getFollowingEvents };
