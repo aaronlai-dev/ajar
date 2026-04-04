@@ -1,17 +1,15 @@
-import { CaretLeftIcon } from "phosphor-react-native";
-import { useState } from "react";
-import { FlatList, Pressable, View } from "react-native";
+import { FlatList, View } from "react-native";
 import { useSearchProfiles } from "@/hooks/use-search-profiles";
 import type { SearchResult } from "@/schemas/search.schema";
 import { useDebounce } from "@/utils/use-debounce";
 import { RelationshipRow } from "./relationship-row";
-import { SearchBar } from "./search-bar";
 import { ThemedText } from "./themed-text";
 
-const FriendSearch = () => {
-	const [searchTerm, setSearchTerm] = useState("");
-	const [isFocused, setIsFocused] = useState(false);
+interface FriendSearchResultsProps {
+	searchTerm: string;
+}
 
+const FriendSearchResults = ({ searchTerm }: FriendSearchResultsProps) => {
 	const debouncedSearchTerm = useDebounce(searchTerm, 300);
 	const {
 		data: searchResults,
@@ -19,29 +17,8 @@ const FriendSearch = () => {
 		error,
 	} = useSearchProfiles(debouncedSearchTerm);
 
-	const handleFocus = () => setIsFocused(true);
-
-	const handleCancel = () => {
-		setSearchTerm("");
-		setIsFocused(false);
-	};
-
 	return (
 		<>
-			{/* Header row with search + cancel */}
-			<View className="flex-row items-center px-4 pt-14 pb-3 gap-3">
-				<Pressable onPress={handleCancel}>
-					<CaretLeftIcon size={20} weight="regular" />
-				</Pressable>
-				<View className="flex-1">
-					<SearchBar
-						value={searchTerm}
-						onChangeText={setSearchTerm}
-						autoFocus
-					/>
-				</View>
-			</View>
-
 			{/* Results */}
 			<View className="flex-1 px-4">
 				{isLoading && (
@@ -96,4 +73,4 @@ const FriendSearch = () => {
 	);
 };
 
-export { FriendSearch };
+export { FriendSearchResults };
