@@ -10,7 +10,7 @@ interface ThemedBorderProps {
 const ThemedBorder = ({ children, className, style }: ThemedBorderProps) => {
 	return (
 		<View
-			className={`border-2 border-black rounded-md p-2 min-h-10 min-w-10 ${className}`}
+			className={`border-2 border-black rounded-md ${className}`}
 			style={style}
 		>
 			{children}

@@ -1,6 +1,7 @@
 import type { Dispatch, SetStateAction } from "react";
 import { Pressable, View } from "react-native";
 import type { TabType } from "../layout/relationship-tabs";
+import { ThemedBorder } from "./themed-border";
 import { ThemedText } from "./themed-text";
 
 interface RelationshipListHeaderProps {
@@ -26,24 +27,23 @@ const RelationshipListHeaderTab = ({
 	const isActive = activeTab === tab;
 
 	return (
-		<Pressable
-			className={`flex-1 py-1.5 items-center justify-center rounded-full ${
-				isActive ? "bg-white" : "bg-transparent"
-			}`}
-			onPress={() => setActiveTab(tab)}
-			accessibilityRole="button"
-			accessibilityState={{ selected: isActive }}
+		<ThemedBorder
+			className={`flex-1 h-8 ${isActive ? "bg-white" : "bg-transparent"}`}
 		>
-			<ThemedText
-				variant="body"
-				className={`font-semibold ${isActive ? "text-orange-500" : "text-white"}`}
+			<Pressable
+				className="w-full h-full items-center justify-center"
+				onPress={() => setActiveTab(tab)}
+				accessibilityRole="button"
+				accessibilityState={{ selected: isActive }}
 			>
-				{label}
-			</ThemedText>
-			{hasPending && (
-				<View className="absolute top-1 right-5 bg-red-500 rounded-full w-3 h-3 items-center justify-center" />
-			)}
-		</Pressable>
+				<ThemedText
+					variant="body"
+					className={`font-semibold ${isActive ? "text-black-500" : "text-black-100"}`}
+				>
+					{label}
+				</ThemedText>
+			</Pressable>
+		</ThemedBorder>
 	);
 };
 
@@ -54,7 +54,7 @@ const RelationshipListHeader = ({
 	followingHasPending,
 }: RelationshipListHeaderProps) => {
 	return (
-		<View className="flex-row bg-orange-500 rounded-full my-2 p-1">
+		<View className="flex-row gap-2">
 			<RelationshipListHeaderTab
 				tab="followers"
 				label="Followers"

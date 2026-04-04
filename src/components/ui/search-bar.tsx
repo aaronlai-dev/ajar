@@ -16,7 +16,7 @@ const SearchBar = ({
 	return (
 		<View className="mr-2">
 			<TextInput
-				className=" bg-accent h-full"
+				className="h-full"
 				placeholder="Search for future neighbours!"
 				value={value}
 				onChangeText={onChangeText}
