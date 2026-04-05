@@ -50,7 +50,7 @@ const FriendSearchResults = ({ searchTerm }: FriendSearchResultsProps) => {
 					)}
 
 				{!isLoading && searchResults && searchResults.length > 0 && (
-					<View>
+					<View className="flex-1">
 						<ThemedText variant="caption">
 							Found {searchResults.length} result(s)
 						</ThemedText>

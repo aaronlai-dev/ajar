@@ -5,7 +5,7 @@ import {
 	withTiming,
 } from "react-native-reanimated";
 
-const HEADER_WIDTH = 312;
+const HEADER_WIDTH = 314; // TODO: Calculate this to work for all screens
 const DURATION = { fast: 150, slow: 300 };
 
 export const useSearchAnimation = () => {

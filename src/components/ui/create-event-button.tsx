@@ -7,7 +7,8 @@ const CreateEventButton = () => {
 
 	return (
 		<Pressable
-			className="bg-amber-200 rounded-4xl mx-4 mb-4 w-5/6 h-17.5 self-center justify-center items-center shadow-lg"
+			className="w-full h-full"
+			hitSlop={20}
 			onPress={() => {
 				router.push("/modal");
 			}}

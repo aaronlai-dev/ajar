@@ -27,7 +27,7 @@ const FriendSearchHeader = ({
 		<Animated.View style={titleContainerStyle} className="overflow-hidden h-10">
 			<ThemedText variant="h1">neighbours</ThemedText>
 		</Animated.View>
-		<AnimatedThemedBorder className="flex-1 flex flex-row h-10 p-2">
+		<AnimatedThemedBorder className="flex-1 flex flex-row h-10 w-10 p-2">
 			<Animated.View style={searchStyle} className="flex-1">
 				<SearchBar value={searchTerm} onChangeText={onSearchChange} autoFocus />
 			</Animated.View>
