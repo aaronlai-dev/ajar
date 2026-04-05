@@ -21,6 +21,7 @@ import {
 import { ThemedBorder } from "../ui/themed-border";
 import { ThemedText } from "../ui/themed-text";
 import { DateTimeField } from "./datetime-input";
+import { TextInputLabel } from "./text-input-label";
 import { ThemedTextInput } from "./themed-text-input";
 
 // ─── Small shared UI ──────────────────────────────────────────────────────────
@@ -114,7 +115,7 @@ const CreateEventForm = () => {
 		<View className="gap-y-4">
 			{/* Title */}
 			<View>
-				<ThemedText variant="body">title</ThemedText>
+				<TextInputLabel label="title" errorMsg={errors.title?.message} />
 				<Controller
 					control={control}
 					name="title"
@@ -128,16 +129,14 @@ const CreateEventForm = () => {
 						/>
 					)}
 				/>
-				{errors.title?.message && (
-					<Text className="text-red-500 text-xs mt-1 ml-1">
-						{errors.title.message}
-					</Text>
-				)}
 			</View>
 
 			{/* Description */}
 			<View>
-				<ThemedText variant="body">description</ThemedText>
+				<TextInputLabel
+					label="description"
+					errorMsg={errors.description?.message}
+				/>
 				<Controller
 					control={control}
 					name="description"
@@ -152,11 +151,6 @@ const CreateEventForm = () => {
 						/>
 					)}
 				/>
-				{errors.description?.message && (
-					<Text className="text-red-500 text-xs mt-1 ml-1">
-						{errors.description.message}
-					</Text>
-				)}
 			</View>
 
 			{/* Start Date/Time */}
