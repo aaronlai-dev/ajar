@@ -76,7 +76,7 @@ const CreateEventForm = () => {
 			address: null,
 			place_id: null,
 			location: null,
-			is_private: false,
+			is_private: true,
 		},
 	});
 
@@ -111,7 +111,7 @@ const CreateEventForm = () => {
 	};
 
 	return (
-		<View className="gap-y-5">
+		<View className="gap-y-4">
 			{/* Title */}
 			<View>
 				<ThemedText variant="body">title</ThemedText>
@@ -161,7 +161,7 @@ const CreateEventForm = () => {
 
 			{/* Start Date/Time */}
 			<DateTimeField
-				label="Start"
+				label="start"
 				value={startDate}
 				onChange={handleStartChange}
 				error={errors.start_time?.message}
@@ -169,7 +169,7 @@ const CreateEventForm = () => {
 
 			{/* End Date/Time */}
 			<DateTimeField
-				label="End"
+				label="end"
 				value={endDate}
 				minimumDate={startDate}
 				onChange={handleEndChange}
@@ -202,20 +202,26 @@ const CreateEventForm = () => {
 			{/* Private toggle */}
 			<View className="flex-row items-center justify-between px-1">
 				<View>
-					<Text className="text-sm font-medium text-gray-700">
-						Private Event
-					</Text>
-					<Text className="text-xs text-gray-400 mt-0.5">
-						Only invited guests can see this
-					</Text>
+					<ThemedText variant="body">private?</ThemedText>
+					<Controller
+						control={control}
+						name="is_private"
+						render={({ field: { value } }) => (
+							<ThemedText variant="caption" className="text-gray-400 mt-0.5">
+								{value
+									? "only your followers can see this event"
+									: "this event is public for everyone to see"}
+							</ThemedText>
+						)}
+					/>
 				</View>
 				<Controller
 					control={control}
 					name="is_private"
-					render={({ field: { onChange, value } }) => (
+					render={({ field }) => (
 						<Switch
-							onValueChange={onChange}
-							value={value}
+							onValueChange={field.onChange}
+							value={field.value}
 							trackColor={{ false: "#d1d5db", true: "#6366f1" }}
 							thumbColor="#ffffff"
 						/>

@@ -1,6 +1,6 @@
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { Label } from "@react-navigation/elements";
 import { Text, View } from "react-native";
+import { ThemedText } from "../ui/themed-text";
 
 interface DateTimeFieldProps {
 	label: string;
@@ -23,7 +23,7 @@ const DateTimeField = ({
 
 	return (
 		<View className="flex-row items-center justify-around">
-			<Label>{label}</Label>
+			<ThemedText variant="body">{label}</ThemedText>
 			<DateTimePicker
 				value={value}
 				mode="datetime"
