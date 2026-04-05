@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { differenceInMinutes } from "date-fns";
 import { useRouter } from "expo-router";
 import { RocketLaunchIcon } from "phosphor-react-native";
 import type React from "react";
@@ -100,6 +101,16 @@ const CreateEventForm = () => {
 		setValue("end_time", toISO(date), { shouldValidate: true });
 	};
 
+	const getDuration = () => {
+		const totalMinutes = differenceInMinutes(endDate, startDate);
+		if (totalMinutes <= 0) return "—";
+		const hours = Math.floor(totalMinutes / 60);
+		const minutes = totalMinutes % 60;
+		if (hours === 0) return `${minutes} mins`;
+		if (minutes === 0) return `${hours} hrs`;
+		return `${hours} hrs ${minutes} mins`;
+	};
+
 	const onSubmit = (data: CreateEventInput) => {
 		createEvent(data, {
 			onSuccess: () => {
@@ -153,22 +164,28 @@ const CreateEventForm = () => {
 				/>
 			</View>
 
-			{/* Start Date/Time */}
-			<DateTimeField
-				label="start"
-				value={startDate}
-				onChange={handleStartChange}
-				error={errors.start_time?.message}
-			/>
+			{/* Start/End Datetime */}
+			<View className="flex gap-2 mt-4">
+				<View className="flex gap-4">
+					<DateTimeField
+						label="start"
+						value={startDate}
+						onChange={handleStartChange}
+						error={errors.start_time?.message}
+					/>
+					<DateTimeField
+						label=" end "
+						value={endDate}
+						minimumDate={startDate}
+						onChange={handleEndChange}
+						error={errors.end_time?.message}
+					/>
+				</View>
 
-			{/* End Date/Time */}
-			<DateTimeField
-				label="end"
-				value={endDate}
-				minimumDate={startDate}
-				onChange={handleEndChange}
-				error={errors.end_time?.message}
-			/>
+				<ThemedText variant="caption" className="w-full text-right pr-6">
+					duration: {getDuration()}
+				</ThemedText>
+			</View>
 
 			{/* Address */}
 			<View>
