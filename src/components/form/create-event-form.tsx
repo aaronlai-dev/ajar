@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "expo-router";
+import { RocketLaunchIcon } from "phosphor-react-native";
 import type React from "react";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -14,10 +15,13 @@ import {
 import { useAuth } from "@/contexts/auth-context";
 import { useCreateEvent } from "@/hooks/use-create-event";
 import {
-	type CreateEventFormInput,
+	type CreateEventInput,
 	CreateEventSchema,
 } from "@/schemas/event.schema";
+import { ThemedBorder } from "../ui/themed-border";
+import { ThemedText } from "../ui/themed-text";
 import { DateTimeField } from "./datetime-input";
+import { ThemedTextInput } from "./themed-text-input";
 
 // ─── Small shared UI ──────────────────────────────────────────────────────────
 
@@ -31,6 +35,8 @@ function Label({ children }: { children: React.ReactNode }) {
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
+const MAX_CHAR_TITLE = 40;
+const MAX_CHAR_DESC = 128;
 const DEFAULT_DURATION_MS = 60 * 60 * 1000; // 1 hour
 
 function toISO(date: Date): string {
@@ -59,7 +65,7 @@ const CreateEventForm = () => {
 		formState: { errors },
 		reset,
 		setValue,
-	} = useForm<CreateEventFormInput>({
+	} = useForm<CreateEventInput>({
 		resolver: zodResolver(CreateEventSchema),
 		defaultValues: {
 			creator_id: user?.id ?? "",
@@ -93,7 +99,7 @@ const CreateEventForm = () => {
 		setValue("end_time", toISO(date), { shouldValidate: true });
 	};
 
-	const onSubmit = (data: CreateEventFormInput) => {
+	const onSubmit = (data: CreateEventInput) => {
 		createEvent(data, {
 			onSuccess: () => {
 				reset();
@@ -108,17 +114,17 @@ const CreateEventForm = () => {
 		<View className="gap-y-5">
 			{/* Title */}
 			<View>
-				<Label>Title *</Label>
+				<ThemedText variant="body">title</ThemedText>
 				<Controller
 					control={control}
 					name="title"
 					render={({ field: { onChange, onBlur, value } }) => (
-						<TextInput
-							className="border border-gray-300 rounded-xl px-4 py-3 text-base text-gray-900 bg-gray-50"
+						<ThemedTextInput
 							placeholder="Event title"
-							onChangeText={onChange}
+							onChange={onChange}
 							onBlur={onBlur}
 							value={value}
+							maxLength={MAX_CHAR_TITLE}
 						/>
 					)}
 				/>
@@ -131,19 +137,18 @@ const CreateEventForm = () => {
 
 			{/* Description */}
 			<View>
-				<Label>Description</Label>
+				<ThemedText variant="body">description</ThemedText>
 				<Controller
 					control={control}
 					name="description"
 					render={({ field: { onChange, onBlur, value } }) => (
-						<TextInput
-							className="border border-gray-300 rounded-xl px-4 py-3 text-base text-gray-900 bg-gray-50 min-h-[100px]"
-							placeholder="What's this event about? (optional)"
-							onChangeText={(text) => onChange(text || null)}
+						<ThemedTextInput
+							placeholder="What's this event about?"
+							onChange={onChange}
 							onBlur={onBlur}
 							value={value ?? ""}
-							multiline
-							textAlignVertical="top"
+							maxLength={MAX_CHAR_DESC}
+							multiline={true}
 						/>
 					)}
 				/>
@@ -219,21 +224,28 @@ const CreateEventForm = () => {
 			</View>
 
 			{/* Submit */}
-			<Pressable
-				className={`rounded-xl py-4 items-center mt-2 ${
-					isPending ? "bg-indigo-300" : "bg-indigo-500"
+			<ThemedBorder
+				className={`w-full h-16 justify-center items-center mt-2 ${
+					isPending ? "bg-indigo-300" : "bg-white"
 				}`}
-				onPress={handleSubmit(onSubmit)}
-				disabled={isPending}
 			>
-				{isPending ? (
-					<ActivityIndicator color="#ffffff" />
-				) : (
-					<Text className="text-white font-semibold text-base">
-						Create Event
-					</Text>
-				)}
-			</Pressable>
+				<Pressable
+					className="flex-row w-full h-full justify-center items-center py-4 gap-2"
+					onPress={handleSubmit(onSubmit)}
+					disabled={isPending}
+				>
+					{isPending ? (
+						<ActivityIndicator color="#000000" />
+					) : (
+						<>
+							<Text className="text-black font-semibold text-base">
+								Create Event
+							</Text>
+							<RocketLaunchIcon size={20} weight="bold" />
+						</>
+					)}
+				</Pressable>
+			</ThemedBorder>
 		</View>
 	);
 };
