@@ -121,7 +121,7 @@ const CreateEventForm = () => {
 					name="title"
 					render={({ field: { onChange, onBlur, value } }) => (
 						<ThemedTextInput
-							placeholder="Event title"
+							placeholder="something fun!"
 							onChange={onChange}
 							onBlur={onBlur}
 							value={value}
@@ -142,7 +142,7 @@ const CreateEventForm = () => {
 					name="description"
 					render={({ field: { onChange, onBlur, value } }) => (
 						<ThemedTextInput
-							placeholder="What's this event about?"
+							placeholder="something descriptive!"
 							onChange={onChange}
 							onBlur={onBlur}
 							value={value ?? ""}

@@ -1,5 +1,6 @@
 import { TextInput } from "react-native";
 import { ThemedBorder } from "../ui/themed-border";
+import { ThemedText } from "../ui/themed-text";
 
 interface ThemedTextInputProps {
 	onChange: (text: string) => void;
@@ -10,6 +11,8 @@ interface ThemedTextInputProps {
 	multiline?: boolean;
 }
 
+const MAX_NUM_LINES = 5;
+
 const ThemedTextInput = ({
 	onChange,
 	onBlur,
@@ -19,16 +22,22 @@ const ThemedTextInput = ({
 	multiline = false,
 }: ThemedTextInputProps) => {
 	return (
-		<ThemedBorder className="text-base text-gray-900 bg-gray-50">
+		<ThemedBorder className="flex flex-row items-center justify-between mt-0.5 text-gray-900 bg-gray-50">
 			<TextInput
-				className="px-4 py-3 leading-4.5"
+				className="flex-1 pl-3 py-3 leading-4.5"
 				placeholder={placeholder}
 				onChangeText={onChange}
 				onBlur={onBlur}
 				value={value}
 				maxLength={maxLength}
 				multiline={multiline}
+				numberOfLines={multiline ? MAX_NUM_LINES : 1}
 			/>
+			{maxLength && (
+				<ThemedText variant="caption" className="text-center w-1/7 mx-2">
+					{value.length}/{maxLength}
+				</ThemedText>
+			)}
 		</ThemedBorder>
 	);
 };
