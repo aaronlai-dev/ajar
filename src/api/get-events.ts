@@ -3,6 +3,7 @@ import {
 	type EventResponse,
 	EventResponseSchema,
 } from "@/schemas/event.schema";
+import { RELATIONSHIP_STATUS } from "@/schemas/relationship.schema";
 
 // ─── Get Following Events ─────────────────────────────────────────────────────
 
@@ -10,11 +11,14 @@ async function getFollowingEvents(userId: string): Promise<EventResponse[]> {
 	const { data: relationships, error: relError } = await supabase
 		.from("relationships")
 		.select("following_id")
-		.eq("follower_id", userId);
+		.eq("follower_id", userId)
+		.eq("status", RELATIONSHIP_STATUS.accepted);
 
 	if (relError) throw relError;
 
 	const followingIds = relationships.map((r) => r.following_id);
+
+	console.log("FollowingIds", followingIds);
 
 	if (followingIds.length === 0) return [];
 

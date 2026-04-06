@@ -12,7 +12,7 @@ export const relationshipWithProfileSchema = z.object({
 	profile: userProfileSchema,
 });
 
-export type UserProfile = z.infer<typeof userProfileSchema>;
+export const RELATIONSHIP_STATUS = relationshipStatusSchema.enum;
 
 export type RelationshipWithProfile = z.infer<
 	typeof relationshipWithProfileSchema
