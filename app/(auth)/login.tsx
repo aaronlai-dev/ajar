@@ -2,15 +2,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import {
-	ActivityIndicator,
-	Pressable,
-	Text,
-	TextInput,
-	View,
-} from "react-native";
+import { ActivityIndicator, Pressable, Text, View } from "react-native";
 import { z } from "zod";
+import { ThemedTextInput } from "@/components/form/themed-text-input";
 import { ContentSafeArea } from "@/components/layout/content-safe-area";
+import { ThemedText } from "@/components/ui/themed-text";
 import { supabase } from "@/lib/supabase";
 
 const loginSchema = z.object({
@@ -52,24 +48,23 @@ const LoginScreen = () => {
 
 	return (
 		<ContentSafeArea>
-			<View className="w-full">
-				<Text className="text-2xl font-bold text-center mb-4 text-black dark:text-white">
-					Sign in
-				</Text>
+			<View className="flex w-full gap-4">
+				<ThemedText variant="h1">ajar</ThemedText>
+				<ThemedText variant="bodyLarge">
+					an app about leaving doors a little open for others
+				</ThemedText>
 
 				<Controller
 					control={control}
 					name="email"
 					render={({ field: { onChange, onBlur, value } }) => (
-						<TextInput
-							placeholder="Email"
-							value={value}
-							onChangeText={onChange}
+						<ThemedTextInput
+							onChange={onChange}
 							onBlur={onBlur}
+							value={value}
+							placeholder="email"
 							keyboardType="email-address"
 							autoCapitalize="none"
-							placeholderTextColor="#9CA3AF"
-							className="border border-gray-300 dark:border-gray-700 rounded p-3 mb-1 text-black dark:text-white bg-transparent"
 						/>
 					)}
 				/>
@@ -83,14 +78,13 @@ const LoginScreen = () => {
 					control={control}
 					name="password"
 					render={({ field: { onChange, onBlur, value } }) => (
-						<TextInput
-							placeholder="Password"
-							value={value}
-							onChangeText={onChange}
+						<ThemedTextInput
+							onChange={onChange}
 							onBlur={onBlur}
+							value={value}
+							placeholder="password"
 							secureTextEntry
-							placeholderTextColor="#9CA3AF"
-							className="border border-gray-300 dark:border-gray-700 rounded p-3 mb-1 text-black dark:text-white bg-transparent"
+							autoCapitalize="none"
 						/>
 					)}
 				/>

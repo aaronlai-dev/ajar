@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { SectionList, View } from "react-native";
-import type { UserProfile } from "@/schemas/relationship.schema";
+import type { UserProfile } from "@/schemas/profile.schema";
 import { RelationshipRow } from "../ui/relationship-row";
 import { RelationshipListHeader } from "../ui/relationship-tab-header";
 import { ThemedText } from "../ui/themed-text";
