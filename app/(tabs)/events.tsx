@@ -1,6 +1,7 @@
 import { ContentSafeArea } from "@/components/layout/content-safe-area";
 import { EventCard } from "@/components/layout/event-card";
-import { EventScreenHeader } from "@/components/layout/event-screen-header";
+import { ScreenHeader } from "@/components/layout/screen-header";
+import { CreateEventButton } from "@/components/ui/create-event-button";
 import { useAuthenticatedUser } from "@/contexts/auth-context";
 import { useEvents } from "@/hooks/use-events";
 
@@ -12,7 +13,9 @@ const EventsScreen = () => {
 
 	return (
 		<ContentSafeArea>
-			<EventScreenHeader />
+			<ScreenHeader title="events">
+				<CreateEventButton />
+			</ScreenHeader>
 			{current?.map((event) => (
 				<EventCard
 					key={event.id}
