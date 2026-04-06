@@ -158,6 +158,18 @@ const CreateEventForm = () => {
 				/>
 			</View>
 
+			{/* Address */}
+			<View>
+				<TextInputLabel label="address" errorMsg={errors.address?.message} />
+				<Controller
+					control={control}
+					name="address"
+					render={({ field: { onChange, onBlur, value } }) => (
+						<GooglePlacesInput />
+					)}
+				/>
+			</View>
+
 			{/* Start/End Datetime */}
 			<View className="flex gap-2 mt-4">
 				<View className="flex gap-4">
@@ -181,27 +193,8 @@ const CreateEventForm = () => {
 				</ThemedText>
 			</View>
 
-			{/* Address */}
-			<View>
-				<Label>Address</Label>
-				<Controller
-					control={control}
-					name="address"
-					render={({ field: { onChange, onBlur, value } }) => (
-						<View className="w-full h-20">
-							<GooglePlacesInput />
-						</View>
-					)}
-				/>
-				{errors.address?.message && (
-					<Text className="text-red-500 text-xs mt-1 ml-1">
-						{errors.address.message}
-					</Text>
-				)}
-			</View>
-
 			{/* Private toggle */}
-			<View className="flex-row items-center justify-between px-1">
+			<View className="flex-row justify-between items-center px-1">
 				<View>
 					<ThemedText variant="body">private?</ThemedText>
 					<Controller
@@ -216,18 +209,20 @@ const CreateEventForm = () => {
 						)}
 					/>
 				</View>
-				<Controller
-					control={control}
-					name="is_private"
-					render={({ field }) => (
-						<Switch
-							onValueChange={field.onChange}
-							value={field.value}
-							trackColor={{ false: "#d1d5db", true: "#6366f1" }}
-							thumbColor="#ffffff"
-						/>
-					)}
-				/>
+				<View>
+					<Controller
+						control={control}
+						name="is_private"
+						render={({ field }) => (
+							<Switch
+								onValueChange={field.onChange}
+								value={field.value}
+								trackColor={{ false: "#d1d5db", true: "#6366f1" }}
+								thumbColor="#ffffff"
+							/>
+						)}
+					/>
+				</View>
 			</View>
 
 			{/* Submit */}

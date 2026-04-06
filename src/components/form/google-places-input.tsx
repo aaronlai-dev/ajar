@@ -28,6 +28,7 @@ const GooglePlacesInput = () => {
 				secondaryTextNumberOfLines: 1,
 				ellipsizeMode: "tail",
 			}}
+			placeHolderText="somewhere cool! (optional)"
 			clearElement={<XIcon size={20} weight="regular" />}
 			style={styles}
 		/>
@@ -35,11 +36,14 @@ const GooglePlacesInput = () => {
 };
 
 const styles = {
+	container: {
+		marginTop: 2,
+	},
 	inputContainer: {
 		borderColor: "#000000",
 		borderRadius: 8,
 		borderWidth: 2,
-		height: 40,
+		height: 46,
 	},
 	input: textStyles.bodySmall,
 	suggestionsContainer: {
@@ -61,6 +65,9 @@ const styles = {
 	suggestionText: {
 		main: textStyles.bodySmall,
 		secondary: textStyles.caption,
+	},
+	placeholder: {
+		color: "#BBBBBB",
 	},
 };
 
