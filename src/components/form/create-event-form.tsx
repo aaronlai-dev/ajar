@@ -2,7 +2,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { differenceInMinutes } from "date-fns";
 import { useRouter } from "expo-router";
 import { RocketLaunchIcon } from "phosphor-react-native";
-import type React from "react";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { ActivityIndicator, Pressable, Switch, Text, View } from "react-native";
@@ -20,18 +19,6 @@ import { GooglePlacesInput } from "./google-places-input";
 import { TextInputLabel } from "./text-input-label";
 import { ThemedTextInput } from "./themed-text-input";
 
-// ─── Small shared UI ──────────────────────────────────────────────────────────
-
-function Label({ children }: { children: React.ReactNode }) {
-	return (
-		<Text className="text-sm font-medium text-gray-700 mb-1 ml-1">
-			{children}
-		</Text>
-	);
-}
-
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-
 const MAX_CHAR_TITLE = 40;
 const MAX_CHAR_DESC = 128;
 const DEFAULT_DURATION_MS = 60 * 60 * 1000; // 1 hour
@@ -39,8 +26,6 @@ const DEFAULT_DURATION_MS = 60 * 60 * 1000; // 1 hour
 function toISO(date: Date): string {
 	return date.toISOString();
 }
-
-// ─── Form ─────────────────────────────────────────────────────────────────────
 
 const CreateEventForm = () => {
 	const router = useRouter();

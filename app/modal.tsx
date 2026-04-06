@@ -20,7 +20,7 @@ export default function Modal() {
 					>
 						<ArrowLeftIcon size={20} weight="bold" />
 					</Pressable>
-					<ThemedText variant="h4">Create new event</ThemedText>
+					<ThemedText variant="h4">create an event</ThemedText>
 				</View>
 
 				{/* Modal Content */}
