@@ -1,10 +1,8 @@
-import { Pressable, Text } from "react-native";
 import { Avatar } from "@/components/avatar/avatar";
 import { BasicDoor } from "@/components/avatar/basic-door";
 import { ContentSafeArea } from "@/components/layout/content-safe-area";
 import { ScreenHeader } from "@/components/layout/screen-header";
 import { SignOutButton } from "@/components/ui/sign-out-button";
-import { supabase } from "@/lib/supabase";
 
 export default function HomeScreen() {
 	return (
@@ -12,9 +10,6 @@ export default function HomeScreen() {
 			<ScreenHeader title="home">
 				<SignOutButton />
 			</ScreenHeader>
-			<Pressable onPress={async () => await supabase.auth.signOut()}>
-				<Text>Sign Out</Text>
-			</Pressable>
 			<Avatar size={120} walking={true} />
 			<BasicDoor />
 		</ContentSafeArea>
