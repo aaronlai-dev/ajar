@@ -1,0 +1,64 @@
+import { XIcon } from "phosphor-react-native";
+import GooglePlacesTextInput, {
+	type Place,
+} from "react-native-google-places-textinput";
+import { textStyles } from "../ui/themed-text";
+
+const GooglePlacesInput = () => {
+	const handlePlaceSelect = (place: Place) => {
+		console.log("Selected place:", place);
+	};
+
+	return (
+		<GooglePlacesTextInput
+			apiKey=""
+			onPlaceSelect={handlePlaceSelect}
+			languageCode="en"
+			includedRegionCodes={["au"]}
+			autoCapitalize="words"
+			autoCorrect={false}
+			keyboardType="default"
+			returnKeyType="search"
+			textContentType="location"
+			suggestionTextProps={{
+				mainTextNumberOfLines: 1,
+				secondaryTextNumberOfLines: 1,
+				ellipsizeMode: "tail",
+			}}
+			clearElement={<XIcon size={20} weight="regular" />}
+			style={styles}
+		/>
+	);
+};
+
+const styles = {
+	inputContainer: {
+		borderColor: "#000000",
+		borderRadius: 8,
+		borderWidth: 2,
+		height: 40,
+	},
+	input: textStyles.bodySmall,
+	suggestionsContainer: {
+		maxHeight: 250, // Set the maximum height
+		backgroundColor: "#FFFFFF",
+		borderBottomLeftRadius: 8,
+		borderBottomRightRadius: 8,
+		borderWidth: 1,
+		borderColor: "#EEEEEE",
+		borderTopWidth: 0,
+	},
+	// Make individual items stand out with dividers
+	suggestionItem: {
+		paddingVertical: 12,
+		paddingHorizontal: 16,
+		borderBottomWidth: 1,
+		borderBottomColor: "#F0F0F0",
+	},
+	suggestionText: {
+		main: textStyles.bodySmall,
+		secondary: textStyles.caption,
+	},
+};
+
+export { GooglePlacesInput };

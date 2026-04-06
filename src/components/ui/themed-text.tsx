@@ -27,6 +27,21 @@ const variantClasses = {
 	label: "text-sm leading-sm font-medium text-text-primary",
 };
 
+export const textStyles = {
+	body: {
+		fontSize: 16,
+		fontFamily: "Manrope-Regular",
+	},
+	bodySmall: {
+		fontSize: 14,
+		fontFamily: "Manrope-Regular",
+	},
+	caption: {
+		fontSize: 12,
+		fontFamily: "Manrope-Regular",
+	},
+};
+
 export function ThemedText({
 	variant = "body",
 	className,

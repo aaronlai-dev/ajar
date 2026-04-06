@@ -5,14 +5,7 @@ import { RocketLaunchIcon } from "phosphor-react-native";
 import type React from "react";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import {
-	ActivityIndicator,
-	Pressable,
-	Switch,
-	Text,
-	TextInput,
-	View,
-} from "react-native";
+import { ActivityIndicator, Pressable, Switch, Text, View } from "react-native";
 import { useAuth } from "@/contexts/auth-context";
 import { useCreateEvent } from "@/hooks/use-create-event";
 import {
@@ -22,6 +15,7 @@ import {
 import { ThemedBorder } from "../ui/themed-border";
 import { ThemedText } from "../ui/themed-text";
 import { DateTimeField } from "./datetime-input";
+import { GooglePlacesInput } from "./google-places-input";
 import { TextInputLabel } from "./text-input-label";
 import { ThemedTextInput } from "./themed-text-input";
 
@@ -194,13 +188,9 @@ const CreateEventForm = () => {
 					control={control}
 					name="address"
 					render={({ field: { onChange, onBlur, value } }) => (
-						<TextInput
-							className="border border-gray-300 rounded-xl px-4 py-3 text-base text-gray-900 bg-gray-50"
-							placeholder="123 Example St (optional)"
-							onChangeText={(text) => onChange(text || null)}
-							onBlur={onBlur}
-							value={value ?? ""}
-						/>
+						<View className="w-full h-20">
+							<GooglePlacesInput />
+						</View>
 					)}
 				/>
 				{errors.address?.message && (

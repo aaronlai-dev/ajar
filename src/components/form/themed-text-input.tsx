@@ -1,6 +1,6 @@
 import { TextInput } from "react-native";
 import { ThemedBorder } from "../ui/themed-border";
-import { ThemedText } from "../ui/themed-text";
+import { ThemedText, textStyles } from "../ui/themed-text";
 
 interface ThemedTextInputProps {
 	onChange: (text: string) => void;
@@ -32,6 +32,7 @@ const ThemedTextInput = ({
 				maxLength={maxLength}
 				multiline={multiline}
 				numberOfLines={multiline ? MAX_NUM_LINES : 1}
+				style={[textStyles.bodySmall]}
 			/>
 			{maxLength && (
 				<ThemedText variant="caption" className="text-center w-1/7 mx-2">
