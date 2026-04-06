@@ -6,9 +6,20 @@ function useEvents(userId: string) {
 		queryKey: ["events", userId],
 		queryFn: () => getFollowingEvents(userId),
 		enabled: !!userId,
+		select: (data) => {
+			const now = new Date();
+			return {
+				current: data.filter((event) => event.end_time > now),
+				past: data.filter((event) => event.end_time <= now),
+			};
+		},
 	});
 
 	return {
+		data: {
+			live: eventsQuery.data?.current ?? [],
+			past: eventsQuery.data?.past ?? [],
+		},
 		isLoading: eventsQuery.isLoading,
 		isError: eventsQuery.isError,
 		error: eventsQuery.error,

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { userProfileSchema } from "./profile.schema";
 
 // ─── Base ────────────────────────────────────────────────────────────────────
 // Shared shape used to compose other schemas
@@ -8,6 +9,8 @@ const EventBaseSchema = z.object({
 	creator_id: z.uuid(),
 	start_time: z.iso.datetime({ offset: true }),
 	end_time: z.iso.datetime({ offset: true }),
+	created_at: z.iso.datetime({ offset: true }),
+
 	description: z.string().min(1).optional().nullable(),
 	location: z.string().optional().nullable(),
 	address: z.string().min(1).optional().nullable(),
@@ -62,19 +65,19 @@ export type UpdateEventInput = z.input<typeof UpdateEventSchema>;
 export type UpdateEventOutput = z.output<typeof UpdateEventSchema>;
 
 // ─── Response ────────────────────────────────────────────────────────────────
-
-const EventCreatorSchema = z.object({
-	first_name: z.string().nullable(),
-	last_name: z.string().nullable(),
-	username: z.string().nullable(),
-});
+const dateTransform = z.iso
+	.datetime({ offset: true })
+	.transform((val) => new Date(val));
 
 export const EventResponseSchema = EventBaseSchema.extend({
-	creator: EventCreatorSchema.optional(),
+	id: z.uuid(),
+	creator: userProfileSchema,
+	start_time: dateTransform,
+	end_time: dateTransform,
+	created_at: dateTransform,
 }).refine(
 	(data) => new Date(data.end_time) > new Date(data.start_time),
 	endAfterStart,
 );
 
 export type EventResponse = z.output<typeof EventResponseSchema>;
-export type EventCreator = z.output<typeof EventCreatorSchema>;
