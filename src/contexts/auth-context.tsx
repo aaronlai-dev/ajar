@@ -84,5 +84,11 @@ export const useAuth = () => {
 export const useAuthenticatedUser = (): AuthenticatedState => {
 	const context = useAuth();
 
-	return context as AuthenticatedState;
+	if (!context.isAuthenticated) {
+		throw new Error(
+			"useAuthenticatedUser must only be called in authenticated screens",
+		);
+	}
+
+	return context;
 };
