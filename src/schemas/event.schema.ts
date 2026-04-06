@@ -9,15 +9,9 @@ const EventBaseSchema = z.object({
 	start_time: z.iso.datetime({ offset: true }),
 	end_time: z.iso.datetime({ offset: true }),
 	description: z.string().min(1).optional().nullable(),
+	location: z.string().optional().nullable(),
 	address: z.string().min(1).optional().nullable(),
 	place_id: z.string().optional().nullable(),
-	location: z
-		.object({
-			latitude: z.number(),
-			longitude: z.number(),
-		})
-		.optional()
-		.nullable(),
 	is_private: z.boolean().default(false),
 	tags: z.array(z.string()).optional().nullable(),
 });

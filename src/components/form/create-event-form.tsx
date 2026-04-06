@@ -70,39 +70,26 @@ const CreateEventForm = () => {
 			start_time: toISO(defaultStart),
 			end_time: toISO(defaultEnd),
 			description: null,
+			location: null,
 			address: null,
 			place_id: null,
-			location: null,
 			is_private: true,
 		},
 	});
 
 	function handlePlaceSelect(place: Place | null) {
 		if (!place) {
+			setValue("location", null);
 			setValue("address", null);
 			setValue("place_id", null);
-			setValue("location", null);
 			return;
 		}
 
 		const { mainText, secondaryText } = place.structuredFormat;
-		const address = secondaryText
-			? `${mainText.text}, ${secondaryText.text}`
-			: mainText.text;
 
-		setValue("address", address, { shouldValidate: true });
+		setValue("location", mainText.text, { shouldValidate: true });
+		setValue("address", secondaryText?.text, { shouldValidate: true });
 		setValue("place_id", place.placeId, { shouldValidate: true });
-
-		if (place.details?.location) {
-			setValue(
-				"location",
-				{
-					latitude: place.details.location.lat(),
-					longitude: place.details.location.lng(),
-				},
-				{ shouldValidate: true },
-			);
-		}
 	}
 
 	// Keep local state + form field in sync for start time.

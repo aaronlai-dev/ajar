@@ -18,11 +18,9 @@ async function createEvent(input: CreateEventOutput) {
 
 			description: validated.description ?? null,
 			tags: validated.tags ?? null,
+			location: validated.location ?? null,
 			address: validated.address ?? null,
 			place_id: validated.place_id ?? null,
-			location: validated.location
-				? `POINT(${validated.location.longitude} ${validated.location.latitude})`
-				: null,
 		})
 		.select()
 		.single();
