@@ -6,6 +6,7 @@ import type React from "react";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { ActivityIndicator, Pressable, Switch, Text, View } from "react-native";
+import type { Place } from "react-native-google-places-textinput";
 import { useAuth } from "@/contexts/auth-context";
 import { useCreateEvent } from "@/hooks/use-create-event";
 import {
@@ -75,6 +76,34 @@ const CreateEventForm = () => {
 			is_private: true,
 		},
 	});
+
+	function handlePlaceSelect(place: Place | null) {
+		if (!place) {
+			setValue("address", null);
+			setValue("place_id", null);
+			setValue("location", null);
+			return;
+		}
+
+		const { mainText, secondaryText } = place.structuredFormat;
+		const address = secondaryText
+			? `${mainText.text}, ${secondaryText.text}`
+			: mainText.text;
+
+		setValue("address", address, { shouldValidate: true });
+		setValue("place_id", place.placeId, { shouldValidate: true });
+
+		if (place.details?.location) {
+			setValue(
+				"location",
+				{
+					latitude: place.details.location.lat(),
+					longitude: place.details.location.lng(),
+				},
+				{ shouldValidate: true },
+			);
+		}
+	}
 
 	// Keep local state + form field in sync for start time.
 	const handleStartChange = (date: Date) => {
@@ -164,9 +193,7 @@ const CreateEventForm = () => {
 				<Controller
 					control={control}
 					name="address"
-					render={({ field: { onChange, onBlur, value } }) => (
-						<GooglePlacesInput />
-					)}
+					render={() => <GooglePlacesInput onPlaceSelect={handlePlaceSelect} />}
 				/>
 			</View>
 
