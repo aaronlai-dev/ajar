@@ -22,6 +22,11 @@ const EventBaseSchema = z.object({
 	tags: z.array(z.string()).optional().nullable(),
 });
 
+const startAfterNow = {
+	message: "Start time must be in the future",
+	path: ["start_time"],
+};
+
 const endAfterStart = {
 	message: "End time must be after start time",
 	path: ["end_time"],
@@ -31,6 +36,9 @@ const endAfterStart = {
 // Used when submitting a new event. creator_id injected server-side from auth.
 
 export const CreateEventSchema = EventBaseSchema.refine(
+	(data) => new Date(data.start_time) > new Date(),
+	startAfterNow,
+).refine(
 	(data) => new Date(data.end_time) > new Date(data.start_time),
 	endAfterStart,
 );
@@ -43,6 +51,12 @@ export type CreateEventOutput = z.output<typeof CreateEventSchema>;
 
 export const UpdateEventSchema = EventBaseSchema.partial()
 	.extend({ id: z.uuid() })
+	.refine((data) => {
+		if (data.start_time && data.end_time) {
+			return new Date(data.start_time) > new Date();
+		}
+		return true;
+	}, startAfterNow)
 	.refine((data) => {
 		if (data.start_time && data.end_time) {
 			return new Date(data.end_time) > new Date(data.start_time);
