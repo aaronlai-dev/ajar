@@ -1,12 +1,11 @@
 import "../global.css";
 
-import { Stack, useRouter, useSegments } from "expo-router";
+import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import "react-native-reanimated";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { useFonts } from "expo-font";
-import { useEffect } from "react";
 import { ActivityIndicator, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { AuthProvider, useAuth } from "@/contexts/auth-context";
@@ -22,23 +21,6 @@ function RootLayoutNav() {
 	});
 
 	const { isAuthenticated, isLoading } = useAuth();
-	const segments = useSegments();
-	const router = useRouter();
-
-	useEffect(() => {
-		if (isLoading || !fontsLoaded) return;
-
-		const inAuthGroup = segments[0] === "(auth)";
-		const inTabsGroup = segments[0] === "(tabs)";
-
-		if (!isAuthenticated && inTabsGroup) {
-			// Redirect to signin if not authenticated and trying to access protected routes
-			router.replace("/(auth)/login");
-		} else if (isAuthenticated && inAuthGroup) {
-			// Redirect to tabs if authenticated and on auth screens
-			router.replace("/(tabs)");
-		}
-	}, [isAuthenticated, segments, isLoading, fontsLoaded, router]);
 
 	// Show loading while fonts or auth is loading
 	if (!fontsLoaded || isLoading) {
@@ -52,16 +34,23 @@ function RootLayoutNav() {
 	return (
 		<>
 			<Stack>
-				<Stack.Screen name="(auth)/login" options={{ headerShown: false }} />
-				<Stack.Screen name="(auth)/signup" options={{ headerShown: false }} />
-				<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-				<Stack.Screen
-					name="modal"
-					options={{
-						presentation: "modal",
-						headerShown: false,
-					}}
-				/>
+				{/* Unauthenticated routes */}
+				<Stack.Protected guard={!isAuthenticated}>
+					<Stack.Screen name="(auth)/login" options={{ headerShown: false }} />
+					<Stack.Screen name="(auth)/signup" options={{ headerShown: false }} />
+				</Stack.Protected>
+
+				{/* Authenticated routes */}
+				<Stack.Protected guard={isAuthenticated}>
+					<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+					<Stack.Screen
+						name="modal"
+						options={{
+							presentation: "modal",
+							headerShown: false,
+						}}
+					/>
+				</Stack.Protected>
 			</Stack>
 			<StatusBar style="auto" />
 		</>
