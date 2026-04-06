@@ -1,17 +1,14 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "expo-router";
+import { CampfireIcon } from "phosphor-react-native";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import {
-	ActivityIndicator,
-	KeyboardAvoidingView,
-	Platform,
-	Pressable,
-	Text,
-	TextInput,
-	View,
-} from "react-native";
+import { Pressable, Text, View } from "react-native";
 import { z } from "zod";
+import SubmitFormButton from "@/components/form/submit-form-button";
+import { ThemedTextInput } from "@/components/form/themed-text-input";
+import { ContentSafeArea } from "@/components/layout/content-safe-area";
+import { ThemedText } from "@/components/ui/themed-text";
 import { supabase } from "@/lib/supabase";
 
 const signUpSchema = z.object({
@@ -33,6 +30,13 @@ const SignupScreen = () => {
 		handleSubmit,
 		formState: { errors, isSubmitting },
 	} = useForm<FormValues>({
+		defaultValues: {
+			username: "",
+			firstName: "",
+			lastName: "",
+			email: "",
+			password: "",
+		},
 		mode: "onSubmit",
 		resolver: zodResolver(signUpSchema),
 	});
@@ -40,7 +44,6 @@ const SignupScreen = () => {
 	const resetMessage = () => setMessage(null);
 
 	const onSignUp = async (values: FormValues) => {
-		console.log(values);
 		resetMessage();
 		try {
 			const { error } = await supabase.auth.signUp({
@@ -58,147 +61,152 @@ const SignupScreen = () => {
 				setMessage(error.message);
 				return;
 			}
-			setMessage(
-				"Signed up — check your email for a confirmation link if your project requires it.",
-			);
+			setMessage("Signed up — check your email to confirm.");
 		} catch (err: any) {
 			setMessage(err?.message ?? "An unexpected error occurred.");
 		}
 	};
 
 	return (
-		<KeyboardAvoidingView
-			behavior={Platform.select({ ios: "padding", android: undefined })}
-			className="flex-1 bg-white dark:bg-black items-center justify-center p-6"
-		>
-			<View className="w-full max-w-md">
-				<Text className="text-2xl font-bold text-center mb-4 text-black dark:text-white">
-					Sign Up
-				</Text>
+		<ContentSafeArea>
+			<View className="flex-1 w-full justify-between px-4 pb-8">
+				<View className="flex-1 justify-center gap-4">
+					<CampfireIcon size={36} weight="regular" />
+					<ThemedText variant="h1">sign up</ThemedText>
+				</View>
 
-				<Controller
-					control={control}
-					name="firstName"
-					render={({ field: { onChange, onBlur, value } }) => (
-						<TextInput
-							placeholder="First Name"
-							value={value}
-							onChangeText={onChange}
-							onBlur={onBlur}
-							placeholderTextColor="#9CA3AF"
-							className="border border-gray-300 dark:border-gray-700 rounded p-3 mb-1 text-black dark:text-white bg-transparent"
-						/>
-					)}
-				/>
+				<View className="gap-3">
+					<View className="flex-row gap-3">
+						<View className="flex-1">
+							<Controller
+								control={control}
+								name="firstName"
+								render={({ field: { onChange, onBlur, value } }) => (
+									<ThemedTextInput
+										onChange={onChange}
+										onBlur={onBlur}
+										value={value}
+										placeholder="first name"
+										autoCapitalize="words"
+									/>
+								)}
+							/>
+							{errors.firstName ? (
+								<Text className="text-sm text-red-600 mt-1">
+									{errors.firstName.message}
+								</Text>
+							) : null}
+						</View>
 
-				<Controller
-					control={control}
-					name="lastName"
-					render={({ field: { onChange, onBlur, value } }) => (
-						<TextInput
-							placeholder="Last Name"
-							value={value}
-							onChangeText={onChange}
-							onBlur={onBlur}
-							placeholderTextColor="#9CA3AF"
-							className="border border-gray-300 dark:border-gray-700 rounded p-3 mb-1 text-black dark:text-white bg-transparent"
-						/>
-					)}
-				/>
+						<View className="flex-1">
+							<Controller
+								control={control}
+								name="lastName"
+								render={({ field: { onChange, onBlur, value } }) => (
+									<ThemedTextInput
+										onChange={onChange}
+										onBlur={onBlur}
+										value={value}
+										placeholder="last name"
+										autoCapitalize="words"
+									/>
+								)}
+							/>
+							{errors.lastName ? (
+								<Text className="text-sm text-red-600 mt-1">
+									{errors.lastName.message}
+								</Text>
+							) : null}
+						</View>
+					</View>
 
-				<Controller
-					control={control}
-					name="username"
-					render={({ field: { onChange, onBlur, value } }) => (
-						<TextInput
-							placeholder="Username"
-							value={value}
-							onChangeText={onChange}
-							onBlur={onBlur}
-							placeholderTextColor="#9CA3AF"
-							className="border border-gray-300 dark:border-gray-700 rounded p-3 mb-1 text-black dark:text-white bg-transparent"
-						/>
-					)}
-				/>
+					<Controller
+						control={control}
+						name="username"
+						render={({ field: { onChange, onBlur, value } }) => (
+							<ThemedTextInput
+								onChange={onChange}
+								onBlur={onBlur}
+								value={value}
+								placeholder="username"
+								autoCapitalize="none"
+							/>
+						)}
+					/>
+					{errors.username ? (
+						<Text className="text-sm text-red-600 mb-2">
+							{errors.username.message}
+						</Text>
+					) : null}
 
-				<Controller
-					control={control}
-					name="email"
-					render={({ field: { onChange, onBlur, value } }) => (
-						<TextInput
-							placeholder="Email"
-							value={value}
-							onChangeText={onChange}
-							onBlur={onBlur}
-							keyboardType="email-address"
-							autoCapitalize="none"
-							placeholderTextColor="#9CA3AF"
-							className="border border-gray-300 dark:border-gray-700 rounded p-3 mb-1 text-black dark:text-white bg-transparent"
-						/>
-					)}
-				/>
-				{errors.email ? (
-					<Text className="text-sm text-red-600 mb-2">
-						{errors.email.message}
-					</Text>
-				) : null}
+					<Controller
+						control={control}
+						name="email"
+						render={({ field: { onChange, onBlur, value } }) => (
+							<ThemedTextInput
+								onChange={onChange}
+								onBlur={onBlur}
+								value={value}
+								placeholder="email"
+								keyboardType="email-address"
+								autoCapitalize="none"
+							/>
+						)}
+					/>
+					{errors.email ? (
+						<Text className="text-sm text-red-600 mb-2">
+							{errors.email.message}
+						</Text>
+					) : null}
 
-				<Controller
-					control={control}
-					name="password"
-					render={({ field: { onChange, onBlur, value } }) => (
-						<TextInput
-							placeholder="Password"
-							value={value}
-							onChangeText={onChange}
-							onBlur={onBlur}
-							secureTextEntry
-							placeholderTextColor="#9CA3AF"
-							className="border border-gray-300 dark:border-gray-700 rounded p-3 mb-1 text-black dark:text-white bg-transparent"
-						/>
-					)}
-				/>
-				{errors.password ? (
-					<Text className="text-sm text-red-600 mb-2">
-						{errors.password.message}
-					</Text>
-				) : null}
+					<Controller
+						control={control}
+						name="password"
+						render={({ field: { onChange, onBlur, value } }) => (
+							<ThemedTextInput
+								onChange={onChange}
+								onBlur={onBlur}
+								value={value}
+								placeholder="password"
+								secureTextEntry
+								autoCapitalize="none"
+							/>
+						)}
+					/>
+					{errors.password ? (
+						<Text className="text-sm text-red-600 mb-2">
+							{errors.password.message}
+						</Text>
+					) : null}
 
-				{message ? (
-					<Text
-						className="text-sm text-center mb-2"
-						style={{
-							color: message.startsWith("Signed up") ? "#10B981" : "#EF4444",
-						}}
+					{message ? (
+						<Text
+							className="text-sm text-center mb-2"
+							style={{
+								color: message.startsWith("Signed up") ? "#10B981" : "#EF4444",
+							}}
+						>
+							{message}
+						</Text>
+					) : null}
+
+					<SubmitFormButton
+						label="create account"
+						handleSubmit={handleSubmit(onSignUp)}
+						isPending={isSubmitting}
+					/>
+
+					<Pressable
+						onPress={() => router.replace("/login")}
+						className="items-center"
 					>
-						{message}
-					</Text>
-				) : null}
-
-				<Pressable
-					onPress={handleSubmit(onSignUp)}
-					className="bg-blue-600 rounded p-3 mb-2 items-center"
-					disabled={isSubmitting}
-				>
-					{isSubmitting ? (
-						<ActivityIndicator color="#fff" />
-					) : (
-						<Text className="text-white">Create account</Text>
-					)}
-				</Pressable>
-
-				<Pressable
-					onPress={() => {
-						router.replace("/login");
-					}}
-					className="items-center p-3"
-				>
-					<Text className="text-sm text-blue-600">
-						Already have an account?
-					</Text>
-				</Pressable>
+						<ThemedText variant="bodySmall">
+							already have an account? sign in
+						</ThemedText>
+					</Pressable>
+				</View>
 			</View>
-		</KeyboardAvoidingView>
+		</ContentSafeArea>
 	);
 };
 
