@@ -38,5 +38,5 @@ export const useSearchAnimation = () => {
 		opacity: listOpacity.value,
 	}));
 
-	return { toggle, listStyle, searchStyle, titleContainerStyle };
+	return { isOpen, toggle, listStyle, searchStyle, titleContainerStyle };
 };
