@@ -4,6 +4,8 @@ import GooglePlacesTextInput, {
 } from "react-native-google-places-textinput";
 import { textStyles } from "../ui/themed-text";
 
+const SUPABASE_URL = process.env.EXPO_PUBLIC_SUPABASE_URL;
+
 const GooglePlacesInput = () => {
 	const handlePlaceSelect = (place: Place) => {
 		console.log("Selected place:", place);
@@ -12,6 +14,7 @@ const GooglePlacesInput = () => {
 	return (
 		<GooglePlacesTextInput
 			apiKey=""
+			proxyUrl={`${SUPABASE_URL}/functions/v1/place-prediction`}
 			onPlaceSelect={handlePlaceSelect}
 			languageCode="en"
 			includedRegionCodes={["au"]}
