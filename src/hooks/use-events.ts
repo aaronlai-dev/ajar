@@ -17,7 +17,7 @@ function useEvents(userId: string) {
 
 	return {
 		data: {
-			live: eventsQuery.data?.current ?? [],
+			current: eventsQuery.data?.current ?? [],
 			past: eventsQuery.data?.past ?? [],
 		},
 		isLoading: eventsQuery.isLoading,

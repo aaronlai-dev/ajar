@@ -1,29 +1,35 @@
 import { Image, Pressable, View } from "react-native";
 import { ThemedText } from "../ui/themed-text";
 
-type EventStatus = "live" | "upcoming";
-
 interface EventCardProps {
 	eventName: string;
 	hostName: string;
 	hostAvatarUrl?: string;
 	coverImageUrl?: string;
-	tags: string[];
-	status: EventStatus;
-	scheduledTime?: string;
+	startTime: Date;
+	endTime: Date;
 	onPress?: () => void;
 }
 
-export function EventCard({
+const EventCard = ({
 	eventName,
 	hostName,
 	hostAvatarUrl,
 	coverImageUrl,
-	tags,
-	status,
-	scheduledTime,
+	startTime,
+	endTime,
 	onPress,
-}: EventCardProps) {
+}: EventCardProps) => {
+	const now = new Date();
+	const isLive = now >= startTime && now <= endTime;
+
+	const formattedStartTime = startTime
+		? startTime.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+		: undefined;
+	const formattedEndTime = endTime
+		? endTime.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+		: undefined;
+
 	return (
 		<Pressable
 			onPress={onPress}
@@ -46,7 +52,7 @@ export function EventCard({
 
 				{/* Status lozenge — absolute top-right */}
 				<View className="absolute top-2.5 right-2.5">
-					{status === "live" ? (
+					{isLive ? (
 						<View className="flex-row items-center gap-1.5 px-2.5 py-1 rounded-full bg-rose-500">
 							{/* Pulsing dot — use Animated API in production for the pulse effect */}
 							<View className="w-1.5 h-1.5 rounded-full bg-white opacity-90" />
@@ -102,27 +108,11 @@ export function EventCard({
 					{eventName}
 				</ThemedText>
 
-				{/* Scheduled time (upcoming only) */}
-				{status === "upcoming" && scheduledTime && (
-					<ThemedText variant="caption">{scheduledTime}</ThemedText>
-				)}
-
-				{/* Tags */}
-				{tags.length > 0 && (
-					<View className="flex-row flex-wrap gap-1.5">
-						{tags.map((tag) => (
-							<View key={tag} className="px-2 py-0.5 rounded-full bg-stone-100">
-								<ThemedText
-									variant="caption"
-									className="text-stone-500 font-medium"
-								>
-									{tag}
-								</ThemedText>
-							</View>
-						))}
-					</View>
-				)}
+				<ThemedText variant="caption">{formattedStartTime}</ThemedText>
+				<ThemedText variant="caption">{formattedEndTime}</ThemedText>
 			</View>
 		</Pressable>
 	);
-}
+};
+
+export { EventCard };

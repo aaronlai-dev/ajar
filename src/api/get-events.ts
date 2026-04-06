@@ -18,8 +18,6 @@ async function getFollowingEvents(userId: string): Promise<EventResponse[]> {
 
 	const followingIds = relationships.map((r) => r.following_id);
 
-	console.log("FollowingIds", followingIds);
-
 	if (followingIds.length === 0) return [];
 
 	const { data: events, error: eventsError } = await supabase
@@ -38,9 +36,11 @@ async function getFollowingEvents(userId: string): Promise<EventResponse[]> {
 			is_private,
 			tags,
 			profiles!creator_id (
+			  id,
 				first_name,
 				last_name,
-				username
+				username,
+				avatar_url
 			)
 		`)
 		.in("creator_id", followingIds)
@@ -48,13 +48,15 @@ async function getFollowingEvents(userId: string): Promise<EventResponse[]> {
 
 	if (eventsError) throw eventsError;
 
-	return events.map((e) => {
+	const results = events.map((e) => {
 		const { profiles, ...eventFields } = e;
 		return EventResponseSchema.parse({
 			...eventFields,
 			creator: profiles,
 		});
 	});
+
+	return results;
 }
 
 // ─── Delete Event ─────────────────────────────────────────────────────────────
