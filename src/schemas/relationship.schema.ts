@@ -1,14 +1,7 @@
 import { z } from "zod";
+import { userProfileSchema } from "./profile.schema";
 
 export const relationshipStatusSchema = z.enum(["pending", "accepted"]);
-
-export const userProfileSchema = z.object({
-	id: z.uuid(),
-	username: z.string(),
-	first_name: z.string(),
-	last_name: z.string(),
-	avatar_url: z.string().nullable(),
-});
 
 export const relationshipWithProfileSchema = z.object({
 	id: z.uuid(),

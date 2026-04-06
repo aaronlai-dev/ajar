@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { userProfileSchema } from "./relationship.schema";
+import { userProfileSchema } from "./profile.schema";
 
 export const searchResultSchema = userProfileSchema.extend({
 	is_outgoing: z.boolean(),

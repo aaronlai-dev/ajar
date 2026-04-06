@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { supabase } from "@/lib/supabase";
-import { userProfileSchema } from "@/schemas/relationship.schema";
+import { userProfileSchema } from "@/schemas/profile.schema";
 
 const relationshipRowSchema = z.object({
 	user: userProfileSchema,
