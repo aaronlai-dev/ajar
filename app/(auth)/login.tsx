@@ -4,19 +4,12 @@ import { DoorOpenIcon } from "phosphor-react-native";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Pressable, Text, View } from "react-native";
-import { z } from "zod";
 import SubmitFormButton from "@/components/form/submit-form-button";
 import { ThemedTextInput } from "@/components/form/themed-text-input";
 import { ContentSafeArea } from "@/components/layout/content-safe-area";
 import { ThemedText } from "@/components/ui/themed-text";
 import { supabase } from "@/lib/supabase";
-
-const loginSchema = z.object({
-	email: z.email(),
-	password: z.string().min(6),
-});
-
-type FormValues = z.infer<typeof loginSchema>;
+import { type LoginFormValues, loginSchema } from "@/schemas/auth.schema";
 
 const LoginScreen = () => {
 	const router = useRouter();
@@ -26,7 +19,7 @@ const LoginScreen = () => {
 		control,
 		handleSubmit,
 		formState: { errors, isSubmitting },
-	} = useForm<FormValues>({
+	} = useForm<LoginFormValues>({
 		defaultValues: { email: "", password: "" },
 		mode: "onSubmit",
 		resolver: zodResolver(loginSchema),
@@ -34,7 +27,7 @@ const LoginScreen = () => {
 
 	const resetMessage = () => setMessage(null);
 
-	const onSignIn = async (values: FormValues) => {
+	const onSignIn = async (values: LoginFormValues) => {
 		resetMessage();
 		try {
 			const { error } = await supabase.auth.signInWithPassword(values);

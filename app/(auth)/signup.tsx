@@ -4,22 +4,12 @@ import { CampfireIcon } from "phosphor-react-native";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Pressable, Text, View } from "react-native";
-import { z } from "zod";
 import SubmitFormButton from "@/components/form/submit-form-button";
 import { ThemedTextInput } from "@/components/form/themed-text-input";
 import { ContentSafeArea } from "@/components/layout/content-safe-area";
 import { ThemedText } from "@/components/ui/themed-text";
 import { supabase } from "@/lib/supabase";
-
-const signUpSchema = z.object({
-	username: z.string().min(3),
-	firstName: z.string().min(3),
-	lastName: z.string().min(3),
-	email: z.email(),
-	password: z.string().min(6),
-});
-
-type FormValues = z.infer<typeof signUpSchema>;
+import { type SignUpFormValues, signUpSchema } from "@/schemas/auth.schema";
 
 const SignupScreen = () => {
 	const router = useRouter();
@@ -29,7 +19,7 @@ const SignupScreen = () => {
 		control,
 		handleSubmit,
 		formState: { errors, isSubmitting },
-	} = useForm<FormValues>({
+	} = useForm<SignUpFormValues>({
 		defaultValues: {
 			username: "",
 			firstName: "",
@@ -43,7 +33,7 @@ const SignupScreen = () => {
 
 	const resetMessage = () => setMessage(null);
 
-	const onSignUp = async (values: FormValues) => {
+	const onSignUp = async (values: SignUpFormValues) => {
 		resetMessage();
 		try {
 			const { error } = await supabase.auth.signUp({
