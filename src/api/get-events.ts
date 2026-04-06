@@ -18,7 +18,10 @@ async function getFollowingEvents(userId: string): Promise<EventResponse[]> {
 
 	const followingIds = relationships.map((r) => r.following_id);
 
-	if (followingIds.length === 0) return [];
+	const filter =
+		followingIds.length > 0
+			? `creator_id.in.(${followingIds.join(",")}),is_private.eq.false`
+			: `is_private.eq.false`;
 
 	const { data: events, error: eventsError } = await supabase
 		.from("events")
@@ -43,7 +46,7 @@ async function getFollowingEvents(userId: string): Promise<EventResponse[]> {
 				avatar_url
 			)
 		`)
-		.in("creator_id", followingIds)
+		.or(filter)
 		.order("start_time", { ascending: true });
 
 	if (eventsError) throw eventsError;
