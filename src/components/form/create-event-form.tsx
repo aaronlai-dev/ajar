@@ -1,10 +1,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { differenceInMinutes } from "date-fns";
 import { useRouter } from "expo-router";
-import { RocketLaunchIcon } from "phosphor-react-native";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { ActivityIndicator, Pressable, Switch, Text, View } from "react-native";
+import { Switch, View } from "react-native";
 import type { Place } from "react-native-google-places-textinput";
 import { useAuth } from "@/contexts/auth-context";
 import { useCreateEvent } from "@/hooks/use-create-event";
@@ -12,10 +11,10 @@ import {
 	type CreateEventInput,
 	CreateEventSchema,
 } from "@/schemas/event.schema";
-import { ThemedBorder } from "../ui/themed-border";
 import { ThemedText } from "../ui/themed-text";
 import { DateTimeField } from "./datetime-input";
 import { GooglePlacesInput } from "./google-places-input";
+import SubmitFormButton from "./submit-form-button";
 import { TextInputLabel } from "./text-input-label";
 import { ThemedTextInput } from "./themed-text-input";
 
@@ -225,28 +224,11 @@ const CreateEventForm = () => {
 			</View>
 
 			{/* Submit */}
-			<ThemedBorder
-				className={`w-full h-16 justify-center items-center mt-2 ${
-					isPending ? "bg-indigo-300" : "bg-white"
-				}`}
-			>
-				<Pressable
-					className="flex-row w-full h-full justify-center items-center py-4 gap-2"
-					onPress={handleSubmit(onSubmit)}
-					disabled={isPending}
-				>
-					{isPending ? (
-						<ActivityIndicator color="#000000" />
-					) : (
-						<>
-							<Text className="text-black font-semibold text-base">
-								Create Event
-							</Text>
-							<RocketLaunchIcon size={20} weight="bold" />
-						</>
-					)}
-				</Pressable>
-			</ThemedBorder>
+			<SubmitFormButton
+				label="open this door"
+				isPending={isPending}
+				handleSubmit={handleSubmit(onSubmit)}
+			/>
 		</View>
 	);
 };
