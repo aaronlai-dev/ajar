@@ -45,6 +45,7 @@ const EventsScreen = () => {
 								id: event.id,
 								label: event.title,
 							}}
+							collisionAlgorithm="center"
 						>
 							<EventCard
 								eventName={event.title}

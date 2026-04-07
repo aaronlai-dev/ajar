@@ -19,27 +19,25 @@ const DroppableBackground = () => {
 				contentContainerClassName="grow py-4"
 				scrollEventThrottle={16}
 			>
-				<View className="flex-1 flex-row gap-20 ">
+				<View className="flex-1 flex-row gap-24 ">
 					<Droppable<DraggableItemData>
-						droppableId="drop-zone-1"
+						droppableId="drop-zone-reject"
 						style={[styles.dropZone, styles.dropZoneBlue]}
 						onDrop={() => {
 							console.log("dropped into zone 1");
 						}}
 					>
-						<ThemedText variant="body">Zone 1</ThemedText>
-						<ThemedText variant="body">ID: drop-zone-1</ThemedText>
+						<ThemedText variant="body">Reject Zone</ThemedText>
 					</Droppable>
 
 					<Droppable<DraggableItemData>
-						droppableId="drop-zone-2"
+						droppableId="drop-zone-accept"
 						style={[styles.dropZone, styles.dropZoneGreen]}
 						onDrop={() => {
 							console.log("dropped into zone 2");
 						}}
 					>
-						<ThemedText variant="body">Zone 2</ThemedText>
-						<ThemedText variant="body">ID: drop-zone-2</ThemedText>
+						<ThemedText variant="body">Accept Zone</ThemedText>
 					</Droppable>
 				</View>
 			</ScrollView>
