@@ -1,5 +1,4 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { differenceInMinutes } from "date-fns";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -11,6 +10,7 @@ import {
 	type CreateEventInput,
 	CreateEventSchema,
 } from "@/schemas/event.schema";
+import { formatDuration } from "@/utils/duration";
 import { ThemedText } from "../ui/themed-text";
 import { DateTimeField } from "./datetime-input";
 import { GooglePlacesInput } from "./google-places-input";
@@ -95,16 +95,6 @@ const CreateEventForm = () => {
 		setValue("end_time", toISO(date), { shouldValidate: true });
 	};
 
-	const getDuration = () => {
-		const totalMinutes = differenceInMinutes(endDate, startDate);
-		if (totalMinutes <= 0) return "—";
-		const hours = Math.floor(totalMinutes / 60);
-		const minutes = totalMinutes % 60;
-		if (hours === 0) return `${minutes} mins`;
-		if (minutes === 0) return `${hours} hrs`;
-		return `${hours} hrs ${minutes} mins`;
-	};
-
 	const onSubmit = (data: CreateEventInput) => {
 		createEvent(data, {
 			onSuccess: () => {
@@ -187,7 +177,7 @@ const CreateEventForm = () => {
 				</View>
 
 				<ThemedText variant="caption" className="w-full text-right pr-6">
-					duration: {getDuration()}
+					duration: {formatDuration(startDate, endDate)}
 				</ThemedText>
 			</View>
 
