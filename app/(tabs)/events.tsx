@@ -61,6 +61,8 @@ const EventsScreen = () => {
 								hostAvatarUrl={event.creator.avatar_url ?? ""}
 								startTime={event.start_time}
 								endTime={event.end_time}
+								location={event.location}
+								isPrivate={event.is_private}
 							/>
 						</Draggable>
 					))}

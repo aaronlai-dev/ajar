@@ -1,5 +1,11 @@
-import { ClockIcon } from "phosphor-react-native";
+import {
+	ClockIcon,
+	GlobeIcon,
+	HourglassIcon,
+	MapPinIcon,
+} from "phosphor-react-native";
 import { Image, Pressable, View } from "react-native";
+import { formatDuration } from "@/utils/duration";
 import { formatDateRangeLabel } from "../../utils/date-utils";
 import { EventCardDetailRow } from "../ui/event-card-detail-row";
 import { EventHostRow } from "../ui/event-host-row";
@@ -14,6 +20,8 @@ interface EventCardProps {
 	coverImageUrl?: string;
 	startTime: Date;
 	endTime: Date;
+	location?: string | null;
+	isPrivate: boolean;
 	onPress?: () => void;
 }
 
@@ -24,6 +32,8 @@ const EventCard = ({
 	coverImageUrl,
 	startTime,
 	endTime,
+	location,
+	isPrivate,
 	onPress,
 }: EventCardProps) => {
 	const now = new Date();
@@ -68,10 +78,30 @@ const EventCard = ({
 						{eventName}
 					</ThemedText>
 
-					<EventCardDetailRow
-						label={formatDateRangeLabel(startTime, endTime)}
-						icon={<ClockIcon size={14} weight="regular" />}
-					/>
+					{/* Event details */}
+					<View className="flex gap-2">
+						<EventCardDetailRow
+							label={formatDateRangeLabel(startTime, endTime)}
+							icon={<ClockIcon size={20} weight="regular" />}
+						/>
+
+						<EventCardDetailRow
+							label={formatDuration(startTime, endTime)}
+							icon={<HourglassIcon size={20} weight="regular" />}
+						/>
+
+						{location && (
+							<EventCardDetailRow
+								label={location}
+								icon={<MapPinIcon size={20} weight="regular" />}
+							/>
+						)}
+
+						<EventCardDetailRow
+							label={isPrivate ? "Private" : "Public"}
+							icon={<GlobeIcon size={20} weight="regular" />}
+						/>
+					</View>
 				</View>
 			</Pressable>
 		</ThemedBorder>

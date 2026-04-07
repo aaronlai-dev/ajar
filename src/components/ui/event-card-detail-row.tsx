@@ -8,9 +8,9 @@ interface EventCardDetailRowProps {
 
 const EventCardDetailRow = ({ label, icon }: EventCardDetailRowProps) => {
 	return (
-		<View className="flex flex-row h-10 gap-2">
+		<View className="flex flex-row gap-2">
 			{icon}
-			<ThemedText variant="caption">{label}</ThemedText>
+			<ThemedText variant="bodySmall">{label}</ThemedText>
 		</View>
 	);
 };
