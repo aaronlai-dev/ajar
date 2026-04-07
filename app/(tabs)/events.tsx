@@ -1,3 +1,12 @@
+import { useCallback, useRef, useState } from "react";
+import { View } from "react-native";
+import {
+	Draggable,
+	DropProvider,
+	type DropProviderRef,
+	type DroppedItemsMap,
+} from "react-native-reanimated-dnd";
+import { DroppableBackground } from "@/components/dnd/droppable-background";
 import { ContentSafeArea } from "@/components/layout/content-safe-area";
 import { EventCard } from "@/components/layout/event-card";
 import { ScreenHeader } from "@/components/layout/screen-header";
@@ -11,22 +20,45 @@ const EventsScreen = () => {
 		data: { current, past },
 	} = useEvents(userId);
 
+	const dropProviderRef = useRef<DropProviderRef>(null);
+	const [droppedItemsMap, setDroppedItemsMap] = useState<DroppedItemsMap>({});
+
+	const handleDroppedItemsUpdate = useCallback((items: DroppedItemsMap) => {
+		setDroppedItemsMap(items);
+	}, []);
+
 	return (
-		<ContentSafeArea>
-			<ScreenHeader title="events">
-				<CreateEventButton />
-			</ScreenHeader>
-			{current?.map((event) => (
-				<EventCard
-					key={event.id}
-					eventName={event.title}
-					hostName={event.creator.first_name}
-					hostAvatarUrl={event.creator.avatar_url ?? ""}
-					startTime={event.start_time}
-					endTime={event.end_time}
-				/>
-			))}
-		</ContentSafeArea>
+		<DropProvider
+			ref={dropProviderRef}
+			onDroppedItemsUpdate={handleDroppedItemsUpdate}
+		>
+			<ContentSafeArea>
+				<ScreenHeader title="events">
+					<CreateEventButton />
+				</ScreenHeader>
+				<View className="flex w-full items-center">
+					{current?.map((event) => (
+						<Draggable
+							key={event.id}
+							draggableId={event.id}
+							data={{
+								id: event.id,
+								label: event.title,
+							}}
+						>
+							<EventCard
+								eventName={event.title}
+								hostName={event.creator.first_name}
+								hostAvatarUrl={event.creator.avatar_url ?? ""}
+								startTime={event.start_time}
+								endTime={event.end_time}
+							/>
+						</Draggable>
+					))}
+				</View>
+			</ContentSafeArea>
+			<DroppableBackground />
+		</DropProvider>
 	);
 };
 
