@@ -36,10 +36,17 @@ const EventsScreen = () => {
 				<ScreenHeader title="events">
 					<CreateEventButton />
 				</ScreenHeader>
-				<View className="flex-1 w-full items-center">
+				<View className="flex-1 w-full items-center relative">
 					{current?.map((event) => (
 						<Draggable
-							style={{ flex: 1, width: "80%" }}
+							style={{
+								position: "absolute",
+								top: 30,
+								left: 30,
+								right: 30,
+								bottom: 30,
+								margin: "auto",
+							}}
 							key={event.id}
 							draggableId={event.id}
 							data={{
