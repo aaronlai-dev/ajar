@@ -1,4 +1,6 @@
+import { ClockIcon } from "phosphor-react-native";
 import { Image, Pressable, View } from "react-native";
+import { EventCardDetailRow } from "../ui/event-card-detail-row";
 import { EventHostRow } from "../ui/event-host-row";
 import { EventStatusLozenge } from "../ui/event-status-lozenge";
 import { ThemedBorder } from "../ui/themed-border";
@@ -36,11 +38,12 @@ const EventCard = ({
 	return (
 		<ThemedBorder className="w-full h-full bg-gray-50">
 			<Pressable
+				className="flex-1"
 				onPress={onPress}
 				style={({ pressed }) => ({ opacity: pressed ? 0.85 : 1 })}
 			>
 				{/* ── Cover image ───────────────────────────────────── */}
-				<View className="h-44 w-full">
+				<View className="flex-1 w-full">
 					{coverImageUrl ? (
 						<Image
 							source={{ uri: coverImageUrl }}
@@ -58,7 +61,7 @@ const EventCard = ({
 				</View>
 
 				{/* ── Details ───────────────────────────────────────── */}
-				<View className="flex-col gap-2.5 px-3 py-3">
+				<View className="flex-1 flex-col gap-2.5 px-3 py-3">
 					{/* Host row */}
 					<EventHostRow hostAvatarUrl={hostAvatarUrl} hostName={hostName} />
 
@@ -71,8 +74,10 @@ const EventCard = ({
 						{eventName}
 					</ThemedText>
 
-					<ThemedText variant="caption">{formattedStartTime}</ThemedText>
-					<ThemedText variant="caption">{formattedEndTime}</ThemedText>
+					<EventCardDetailRow
+						label={"Sample Label"}
+						icon={<ClockIcon size={14} weight="regular" />}
+					/>
 				</View>
 			</Pressable>
 		</ThemedBorder>
