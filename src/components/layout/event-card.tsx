@@ -1,5 +1,6 @@
 import { ClockIcon } from "phosphor-react-native";
 import { Image, Pressable, View } from "react-native";
+import { formatDateRangeLabel } from "../../utils/date-utils";
 import { EventCardDetailRow } from "../ui/event-card-detail-row";
 import { EventHostRow } from "../ui/event-host-row";
 import { EventStatusLozenge } from "../ui/event-status-lozenge";
@@ -27,13 +28,6 @@ const EventCard = ({
 }: EventCardProps) => {
 	const now = new Date();
 	const isLive = now >= startTime && now <= endTime;
-
-	const formattedStartTime = startTime
-		? startTime.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
-		: undefined;
-	const formattedEndTime = endTime
-		? endTime.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
-		: undefined;
 
 	return (
 		<ThemedBorder className="w-full h-full bg-gray-50">
@@ -75,7 +69,7 @@ const EventCard = ({
 					</ThemedText>
 
 					<EventCardDetailRow
-						label={"Sample Label"}
+						label={formatDateRangeLabel(startTime, endTime)}
 						icon={<ClockIcon size={14} weight="regular" />}
 					/>
 				</View>
