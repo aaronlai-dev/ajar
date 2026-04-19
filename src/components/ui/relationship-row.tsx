@@ -4,7 +4,7 @@ import { useAcceptFollowRequest } from "@/hooks/use-accept-follow-request";
 import { useFollow } from "@/hooks/use-follow";
 import { useRejectFollowRequest } from "@/hooks/use-reject-follow-request";
 import { useUnfollow } from "@/hooks/use-unfollow";
-import type { UserProfile } from "@/schemas/relationship.schema";
+import type { UserProfile } from "@/schemas/profile.schema";
 import PendingFriendActionButton from "./pending-friend-action-button";
 import { ThemedBorder } from "./themed-border";
 import { ThemedText } from "./themed-text";

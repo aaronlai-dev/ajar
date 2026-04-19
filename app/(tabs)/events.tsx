@@ -59,7 +59,15 @@ const EventsScreen = () => {
 							collisionAlgorithm="center"
 							onDragging={onDragging}
 						>
-							<Animated.View style={animatedStyle}>
+							<View className="w-full h-full relative">
+								{/* Overlay on top of card */}
+								<Animated.View
+									pointerEvents="none"
+									className="absolute inset-0 z-2"
+									style={animatedStyle}
+								/>
+
+								{/* Event card itself */}
 								<EventCard
 									eventName={event.title}
 									hostName={event.creator.first_name}
@@ -69,7 +77,7 @@ const EventsScreen = () => {
 									location={event.location}
 									isPrivate={event.is_private}
 								/>
-							</Animated.View>
+							</View>
 						</Draggable>
 					))}
 				</View>

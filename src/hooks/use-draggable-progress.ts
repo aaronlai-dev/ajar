@@ -1,5 +1,6 @@
 import { useCallback } from "react";
 import {
+	interpolate,
 	interpolateColor,
 	useAnimatedStyle,
 	useSharedValue,
@@ -27,6 +28,7 @@ function useDraggableProgress(options?: Options) {
 
 		return {
 			backgroundColor: interpolateColor(progress, [0, 1], colors),
+			opacity: interpolate(progress, [0, 1], [0, 0.7]),
 		};
 	});
 
