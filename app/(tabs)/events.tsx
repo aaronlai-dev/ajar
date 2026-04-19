@@ -1,6 +1,5 @@
 import { useCallback, useRef, useState } from "react";
 import { View } from "react-native";
-import Animated from "react-native-reanimated";
 import {
 	Draggable,
 	DropProvider,
@@ -8,6 +7,7 @@ import {
 	type DroppedItemsMap,
 } from "react-native-reanimated-dnd";
 import { DroppableBackground } from "@/components/dnd/droppable-background";
+import EventCardDragOverlay from "@/components/dnd/event-card-drag-overlay";
 import { ContentSafeArea } from "@/components/layout/content-safe-area";
 import { EventCard } from "@/components/layout/event-card";
 import { ScreenHeader } from "@/components/layout/screen-header";
@@ -61,11 +61,7 @@ const EventsScreen = () => {
 						>
 							<View className="w-full h-full relative">
 								{/* Overlay on top of card */}
-								<Animated.View
-									pointerEvents="none"
-									className="absolute inset-0 z-2"
-									style={animatedStyle}
-								/>
+								<EventCardDragOverlay animatedStyle={animatedStyle} />
 
 								{/* Event card itself */}
 								<EventCard
