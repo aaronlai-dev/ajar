@@ -1,5 +1,6 @@
 import { useCallback, useRef, useState } from "react";
 import { View } from "react-native";
+import Animated from "react-native-reanimated";
 import {
 	Draggable,
 	DropProvider,
@@ -12,6 +13,7 @@ import { EventCard } from "@/components/layout/event-card";
 import { ScreenHeader } from "@/components/layout/screen-header";
 import { CreateEventButton } from "@/components/ui/create-event-button";
 import { useAuthenticatedUser } from "@/contexts/auth-context";
+import { useDraggableProgress } from "@/hooks/use-draggable-progress";
 import { useEvents } from "@/hooks/use-events";
 
 const EventsScreen = () => {
@@ -22,6 +24,7 @@ const EventsScreen = () => {
 
 	const dropProviderRef = useRef<DropProviderRef>(null);
 	const [droppedItemsMap, setDroppedItemsMap] = useState<DroppedItemsMap>({});
+	const { onDragging, animatedStyle } = useDraggableProgress();
 
 	const handleDroppedItemsUpdate = useCallback((items: DroppedItemsMap) => {
 		setDroppedItemsMap(items);
@@ -54,16 +57,19 @@ const EventsScreen = () => {
 								label: event.title,
 							}}
 							collisionAlgorithm="center"
+							onDragging={onDragging}
 						>
-							<EventCard
-								eventName={event.title}
-								hostName={event.creator.first_name}
-								hostAvatarUrl={event.creator.avatar_url ?? ""}
-								startTime={event.start_time}
-								endTime={event.end_time}
-								location={event.location}
-								isPrivate={event.is_private}
-							/>
+							<Animated.View style={animatedStyle}>
+								<EventCard
+									eventName={event.title}
+									hostName={event.creator.first_name}
+									hostAvatarUrl={event.creator.avatar_url ?? ""}
+									startTime={event.start_time}
+									endTime={event.end_time}
+									location={event.location}
+									isPrivate={event.is_private}
+								/>
+							</Animated.View>
 						</Draggable>
 					))}
 				</View>
